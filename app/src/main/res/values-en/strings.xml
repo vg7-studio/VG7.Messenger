@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
+    <string name="message">Message</string>
+    <string name="enter_otp_code_sent_to_your_phone_number">Enter OTP-code sent to your phone number</string>
+    <string name="otp_code">OTP-code</string>
+    <string name="next">Next</string>
+    <string name="enter_mobile_number">Enter mobile number</string>
+    <string name="send_otp_code">Send OTP-code</string>
+    <string name="enter_your_username">Enter your username</string>
+    <string name="username">Username</string>
+    <string name="sign_in">Sign in</string>
+    <string name="search_user">Search User</string>
+    <string name="phone_number">Phone number</string>
+    <string name="status">Status</string>
+    <string name="update_profile">Update profile</string>
+    <string name="logout">Logout</string>
+    <string name="resend_otp_code">Resend OTP-code</string>
+    <string name="resend_otp_code_in_seconds">Resend OTP-code in %d seconds</string>
+    <string name="phone_number_not_valid">Phone number not valid</string>
+    <string name="otp_verification_failed">OTP verification failed</string>
+    <string name="otp_code_sent_successfully">OTP-code sent successfully</string>
+    <string name="username_length_should_be_at_least_3_chars">Username length should be at least 3 chars</string>
+    <string name="updated_successfully">Updated successfully</string>
+    <string name="updated_failed">Updated failed</string>
+    <string name="invalid_username">Invalid Username</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="are_you_sure_you_want_to_leave_your_account">Are you sure you want to leave your account?</string>
+</resources>

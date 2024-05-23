@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats">Чати</string>
+    <string name="profile">Профіль</string>
+    <string name="message">Повідомлення</string>
+    <string name="enter_otp_code_sent_to_your_phone_number">Введіть OTP-код, надісланий на ваш номер телефону</string>
+    <string name="otp_code">OTP-код</string>
+    <string name="next">Далі</string>
+    <string name="enter_mobile_number">Введіть номер телефону</string>
+    <string name="send_otp_code">Надіслати OTP-код</string>
+    <string name="enter_your_username">Введіть своє ім\'я користувача</string>
+    <string name="username">Ім\'я користувача</string>
+    <string name="sign_in">Увійти</string>
+    <string name="search_user">Пошук користувача</string>
+    <string name="phone_number">Номер телефону</string>
+    <string name="status">Статус</string>
+    <string name="update_profile">Оновити профіль</string>
+    <string name="logout">Вийти</string>
+    <string name="resend_otp_code">Повторно надіслати OTP-код</string>
+    <string name="resend_otp_code_in_seconds">Повторно надіслати OTP-код через %d секунд</string>
+    <string name="phone_number_not_valid">Номер телефону недійсний</string>
+    <string name="otp_verification_failed">Перевірка OTP не вдалася</string>
+    <string name="otp_code_sent_successfully">OTP-код успішно надіслано</string>
+    <string name="username_length_should_be_at_least_3_chars">Довжина імені користувача має бути не менше 3 символів</string>
+    <string name="updated_successfully">Оновлено успішно</string>
+    <string name="updated_failed">Не вдалося оновити</string>
+    <string name="invalid_username">Невірне ім\'я користувача</string>
+    <string name="no">Ні</string>
+    <string name="yes">Так</string>
+    <string name="are_you_sure_you_want_to_leave_your_account">Ви впевнені, що хочете вийти з облікового запису?</string>
+</resources>

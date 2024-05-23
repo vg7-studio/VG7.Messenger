@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chats">Чаты</string>
+    <string name="profile">Профиль</string>
+    <string name="message">Сообщение</string>
+    <string name="enter_otp_code_sent_to_your_phone_number">Введите OTP-код, отправленный на ваш номер телефона</string>
+    <string name="otp_code">OTP-код</string>
+    <string name="next">Дальше</string>
+    <string name="enter_mobile_number">Введите номер телефона</string>
+    <string name="send_otp_code">Отправить OTP-код</string>
+    <string name="enter_your_username">Введите имя пользователя</string>
+    <string name="username">Имя пользователя</string>
+    <string name="sign_in">Войти</string>
+    <string name="search_user">Поиск пользователя</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="status">Статус</string>
+    <string name="update_profile">Обновить профиль</string>
+    <string name="logout">Выйти</string>
+    <string name="resend_otp_code">Повторно отправить OTP-код</string>
+    <string name="resend_otp_code_in_seconds">Повторно отправить OTP-код через %d секунд</string>
+    <string name="phone_number_not_valid">Номер телефона недействителен</string>
+    <string name="otp_verification_failed">Проверка OTP не удалась</string>
+    <string name="otp_code_sent_successfully">OTP-код успешно отправлен</string>
+    <string name="username_length_should_be_at_least_3_chars">Длина имени пользователя должна быть не менее 3 символов</string>
+    <string name="updated_successfully">Обновлено успешно</string>
+    <string name="updated_failed">Не удалось обновить</string>
+    <string name="invalid_username">Неверное имя пользователя</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="are_you_sure_you_want_to_leave_your_account">Вы уверены, что хотите выйти из своей учетной записи?</string>
+</resources>

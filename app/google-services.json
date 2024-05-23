@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "624219898418",
+    "project_id": "vg7messenger-fadaa",
+    "storage_bucket": "vg7messenger-fadaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624219898418:android:48b35d84dbb8fe473b722b",
+        "android_client_info": {
+          "package_name": "com.vg7.messenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAavRNxgzse2i-svcX0MsUJz3fv3INEqzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

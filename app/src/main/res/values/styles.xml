@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BottomNavigationBarView">
+        <item name="android:background">@color/white</item>
+    </style>
+    <style name="dialogue">
+        <item name="android:windowBackground">@drawable/empty_background</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowMinWidthMajor">80%</item>
+        <item name="windowActionBar">false</item>
+    </style>
+</resources>
