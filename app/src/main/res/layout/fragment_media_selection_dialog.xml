@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/dialog_media_photo"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:layout_toStartOf="@id/dialog_media_video"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/select_photo_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_37sdp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/select_photo"
+            android:src="@drawable/icon_photo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spartan_bold"
+            android:text="@string/select_photo"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_media_video"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true">
+
+        <ImageButton
+            android:id="@+id/select_video_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_37sdp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/select_video"
+            android:src="@drawable/icon_video" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spartan_bold"
+            android:text="@string/select_video"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_media_file"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:layout_toEndOf="@id/dialog_media_video"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/select_file_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_37sdp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/select_file"
+            android:src="@drawable/icon_file" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spartan_bold"
+            android:text="@string/select_file"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp" />
+    </LinearLayout>
+
+</RelativeLayout>

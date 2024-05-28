@@ -68,25 +68,42 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_toStartOf="@id/message_send_btn"
-            android:textColor="@color/black"
-            android:textColorHint="@color/off_black"
+            android:layout_toStartOf="@id/bottom_layout_buttons"
             android:background="@drawable/edit_text_rounded_corner"
             android:elevation="@dimen/_3sdp"
             android:hint="@string/message"
-            android:padding="@dimen/_8sdp" />
+            android:padding="@dimen/_8sdp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/off_black" />
 
-        <ImageButton
-            android:id="@+id/message_send_btn"
-            android:layout_width="@dimen/_37sdp"
-            android:layout_height="@dimen/_37sdp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/_6sdp"
-            android:src="@drawable/icon_send"
-            app:tint="@color/my_primary" />
+        <RelativeLayout
+            android:id="@+id/bottom_layout_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true">
+            <ImageButton
+                android:id="@+id/message_send_media_btn"
+                android:layout_width="@dimen/_37sdp"
+                android:layout_height="@dimen/_37sdp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/_6sdp"
+                android:src="@drawable/icon_scrapbook"
+                app:tint="@color/my_primary" />
+
+            <ImageButton
+                android:id="@+id/message_send_btn"
+                android:layout_width="@dimen/_37sdp"
+                android:layout_height="@dimen/_37sdp"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_toEndOf="@id/message_send_media_btn"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/_6sdp"
+                android:src="@drawable/icon_send"
+                app:tint="@color/my_primary" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

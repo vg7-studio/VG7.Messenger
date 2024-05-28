@@ -6,6 +6,8 @@ public class ChatMessageModel {
     private String message;
     private String senderId;
     private Timestamp timestamp;
+    private String messageType; // text, image, video
+    private String mediaUrl; // URL для мультимедиа
 
     public ChatMessageModel() {
     }
@@ -14,6 +16,16 @@ public class ChatMessageModel {
         this.message = message;
         this.senderId = senderId;
         this.timestamp = timestamp;
+        this.messageType = "text";
+        this.mediaUrl = null;
+    }
+
+    public ChatMessageModel(String message, String senderId, Timestamp timestamp, String messageType, String messageUrl) {
+        this.message = message;
+        this.senderId = senderId;
+        this.timestamp = timestamp;
+        this.messageType = messageType;
+        this.mediaUrl = messageUrl;
     }
 
     public String getMessage() {
@@ -38,5 +50,21 @@ public class ChatMessageModel {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 }

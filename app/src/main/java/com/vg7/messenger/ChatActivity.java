@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -12,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.vg7.messenger.adapter.ChatRecyclerAdapter;
 import com.vg7.messenger.model.ChatMessageModel;
 import com.vg7.messenger.model.ChatroomModel;
@@ -46,11 +50,16 @@ public class ChatActivity extends AppCompatActivity {
     ChatRecyclerAdapter adapter;
 
     EditText messageInput;
+    ImageButton sendMediaBtn;
     ImageButton sendMessageBtn;
     ImageButton backBtn;
     TextView otherUsername;
     RecyclerView recyclerView;
-    ImageView imageView;
+    ImageView imagePicView;
+
+    private static final int REQUEST_PICK_PHOTO = 1;
+    private static final int REQUEST_PICK_VIDEO = 2;
+    private static final int REQUEST_PICK_FILE = 3;
 
 
     @Override
@@ -63,17 +72,18 @@ public class ChatActivity extends AppCompatActivity {
         chatroomId = FirebaseUtil.getChatroomId(FirebaseUtil.currentUserId(),otherUser.getUserId());
 
         messageInput = findViewById(R.id.chat_message_input);
+        sendMediaBtn = findViewById(R.id.message_send_media_btn);
         sendMessageBtn = findViewById(R.id.message_send_btn);
         backBtn = findViewById(R.id.back_btn);
         otherUsername = findViewById(R.id.other_username);
         recyclerView = findViewById(R.id.chat_recycler_view);
-        imageView = findViewById(R.id.profile_pic_image_view);
+        imagePicView = findViewById(R.id.profile_pic_image_view);
 
         FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {
                     if(t.isSuccessful()){
                         Uri uri  = t.getResult();
-                        AndroidUtil.setProfilePic(this,uri,imageView);
+                        AndroidUtil.setProfilePic(this,uri,imagePicView);
                     }
                 });
 
@@ -82,6 +92,9 @@ public class ChatActivity extends AppCompatActivity {
         });
         otherUsername.setText(otherUser.getUsername());
 
+        sendMediaBtn.setOnClickListener((v -> {
+            showMediaSelectionDialog();
+        }));
         sendMessageBtn.setOnClickListener((v -> {
             String message = messageInput.getText().toString().trim();
             if(message.isEmpty())
@@ -91,6 +104,38 @@ public class ChatActivity extends AppCompatActivity {
 
         getOrCreateChatroomModel();
         setupChatRecyclerView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedMediaUri = data.getData();
+            if (selectedMediaUri != null) {
+                switch (requestCode) {
+                    case REQUEST_PICK_PHOTO:
+                        // Обработка выбора фото
+                        String photoMimeType = getContentResolver().getType(selectedMediaUri);
+                        if (photoMimeType != null && photoMimeType.startsWith("image")) {
+                            sendMediaMessageToUser(selectedMediaUri, "image");
+                            ImageView imageView = findViewById(R.id.right_chat_imageview); // Замените R.id.imageView на ваш ID ImageView
+                            imageView.setImageURI(selectedMediaUri);
+                        }
+                        break;
+                    case REQUEST_PICK_VIDEO:
+                        // Обработка выбора видео
+                        String videoMimeType = getContentResolver().getType(selectedMediaUri);
+                        if (videoMimeType != null && videoMimeType.startsWith("video")) {
+                            sendMediaMessageToUser(selectedMediaUri, "video");
+                        }
+                        break;
+                    case REQUEST_PICK_FILE:
+                        // Обработка выбора файла
+                        sendMediaMessageToUser(selectedMediaUri, "file");
+                        break;
+                }
+            }
+        }
     }
 
     void setupChatRecyclerView(){
@@ -122,7 +167,7 @@ public class ChatActivity extends AppCompatActivity {
         chatroomModel.setLastMessage(message);
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
-        ChatMessageModel chatMessageModel = new ChatMessageModel(message,FirebaseUtil.currentUserId(),Timestamp.now());
+        ChatMessageModel chatMessageModel = new ChatMessageModel(message, FirebaseUtil.currentUserId(), Timestamp.now());
         FirebaseUtil.getChatroomMessageReference(chatroomId).add(chatMessageModel)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
@@ -130,6 +175,49 @@ public class ChatActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             messageInput.setText("");
                             sendNotification(message);
+                        }
+                    }
+                });
+    }
+
+    void sendMediaMessageToUser(Uri fileUri, String messageType) {
+        // Получите ссылку на Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Создайте уникальное имя для файла
+        String fileName = System.currentTimeMillis() + (messageType.equals("image") ? ".jpg" : ".mp4");
+        StorageReference fileRef = storageRef.child("uploads/" + fileName);
+
+        // Загрузите файл
+        fileRef.putFile(fileUri).addOnSuccessListener(taskSnapshot -> {
+            // Получите URL загруженного файла
+            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String fileUrl = uri.toString();
+                // Теперь отправьте URL как часть вашего сообщения
+                sendMessageWithMedia(fileUrl, messageType);
+            });
+        }).addOnFailureListener(exception -> {
+            // Обработка ошибки загрузки
+        });
+    }
+
+    void sendMessageWithMedia(String fileUrl, String messageType) {
+        // Обновите информацию о последнем сообщении в чате
+        chatroomModel.setLastMessageTimestamp(Timestamp.now());
+        chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
+        chatroomModel.setLastMessage(messageType.equals("image") ? "Image" : "Video");
+        FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
+
+        // Создайте объект сообщения с мультимедиа
+        ChatMessageModel chatMessageModel = new ChatMessageModel(fileUrl, FirebaseUtil.currentUserId(), Timestamp.now(), messageType, fileUrl);
+        FirebaseUtil.getChatroomMessageReference(chatroomId).add(chatMessageModel)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            messageInput.setText("");
+                            sendNotification(messageType.equals("image") ? "Image" : "Video");
                         }
                     }
                 });
@@ -183,6 +271,52 @@ public class ChatActivity extends AppCompatActivity {
        });
 
     }
+
+    private void showMediaSelectionDialog() {
+        MediaSelectionDialogFragment dialog = new MediaSelectionDialogFragment();
+        dialog.show(getSupportFragmentManager(), "media_selection_dialog");
+    }
+    public void onSelectMedia(String mediaType) {
+        switch (mediaType) {
+            case "photo":
+                // Обработка выбора фото
+                openPhotoPicker();
+                break;
+            case "video":
+                // Обработка выбора видео
+                openVideoPicker();
+                break;
+            case "file":
+                // Обработка выбора файла
+                openFilePicker();
+                break;
+            default:
+                // Обработка других типов мультимедиа, если необходимо
+                break;
+        }
+    }
+
+    private void openPhotoPicker() {
+        // Открыть окно выбора фото
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_PICK_PHOTO);
+    }
+
+    private void openVideoPicker() {
+        // Открыть окно выбора видео
+        Intent videoPickerIntent = new Intent(Intent.ACTION_PICK);
+        videoPickerIntent.setType("video/*");
+        startActivityForResult(videoPickerIntent, REQUEST_PICK_VIDEO);
+    }
+
+    private void openFilePicker() {
+        // Открыть окно выбора файла
+        Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        filePickerIntent.setType("*/*");
+        startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
+    }
+
 
     void callApi(JSONObject jsonObject){
          MediaType JSON = MediaType.get("application/json; charset=utf-8");
