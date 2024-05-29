@@ -50,22 +50,26 @@ public class LoginOtpActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.login_progress_bar);
         resendOtpTextView = findViewById(R.id.resend_otp_textview);
 
+        // Отримуємо телефонний номер з попередньої активності
         phoneNumber = getIntent().getExtras().getString("phone");
 
+        // Надсилаємо OTP-код
         sendOtp(phoneNumber,false);
 
+        // Налаштовуємо прослуховувач кнопки "Next" для перевірки OTP-коду
         nextBtn.setOnClickListener(v -> {
-           String enteredOtp  = otpInput.getText().toString();
-           PhoneAuthCredential credential =  PhoneAuthProvider.getCredential(verificationCode,enteredOtp);
-           signIn(credential);
+            String enteredOtp  = otpInput.getText().toString();
+            PhoneAuthCredential credential =  PhoneAuthProvider.getCredential(verificationCode,enteredOtp);
+            signIn(credential);
         });
 
+        // Налаштовуємо прослуховувач кнопки "Resend" для повторної відправки OTP-коду
         resendOtpTextView.setOnClickListener((v)->{
             sendOtp(phoneNumber,true);
         });
-
     }
 
+    // Метод для надсилання OTP-коду
     void sendOtp(String phoneNumber,boolean isResend){
         startResendTimer();
         setInProgress(true);
@@ -104,6 +108,7 @@ public class LoginOtpActivity extends AppCompatActivity {
 
     }
 
+    // Метод для відображення або приховання прогресу
     void setInProgress(boolean inProgress){
         if(inProgress){
             progressBar.setVisibility(View.VISIBLE);
@@ -114,14 +119,15 @@ public class LoginOtpActivity extends AppCompatActivity {
         }
     }
 
+    // Метод для входу після підтвердження OTP-коду
     void signIn(PhoneAuthCredential phoneAuthCredential){
-        //login and go to next activity
         setInProgress(true);
         mAuth.signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 setInProgress(false);
                 if(task.isSuccessful()){
+                    // Після успішної автентифікації переходимо до наступної активності
                     Intent intent = new Intent(LoginOtpActivity.this,LoginUsernameActivity.class);
                     intent.putExtra("phone",phoneNumber);
                     startActivity(intent);
@@ -130,10 +136,9 @@ public class LoginOtpActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
+    // Метод для запуску таймера повторної відправки OTP-коду
     void startResendTimer(){
         resendOtpTextView.setEnabled(false);
         Timer timer = new Timer();
@@ -153,19 +158,4 @@ public class LoginOtpActivity extends AppCompatActivity {
             }
         },0,1000);
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

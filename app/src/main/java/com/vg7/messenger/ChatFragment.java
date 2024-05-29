@@ -21,53 +21,59 @@ public class ChatFragment extends Fragment {
     RecyclerView recyclerView;
     RecentChatRecyclerAdapter adapter;
 
-
     public ChatFragment() {
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_chat, container, false);
+        // Повернення макету фрагмента
+        View view = inflater.inflate(R.layout.fragment_chat, container, false);
         recyclerView = view.findViewById(R.id.recyler_view);
+        // Налаштування списку чатів
         setupRecyclerView();
 
         return view;
     }
 
-    void setupRecyclerView(){
-
+    void setupRecyclerView() {
+        // Запит на отримання списку чатів, в яких бере участь поточний користувач
         Query query = FirebaseUtil.allChatroomCollectionReference()
-                .whereArrayContains("userIds",FirebaseUtil.currentUserId())
-                .orderBy("lastMessageTimestamp",Query.Direction.DESCENDING);
+                .whereArrayContains("userIds", FirebaseUtil.currentUserId())
+                .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
 
+        // Налаштування параметрів адаптера для списку чатів
         FirestoreRecyclerOptions<ChatroomModel> options = new FirestoreRecyclerOptions.Builder<ChatroomModel>()
-                .setQuery(query,ChatroomModel.class).build();
+                .setQuery(query, ChatroomModel.class).build();
 
-        adapter = new RecentChatRecyclerAdapter(options,getContext());
+        // Створення адаптера та прикріплення його до списку
+        adapter = new RecentChatRecyclerAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         adapter.startListening();
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if(adapter!=null)
+        // Початок прослуховування змін в базі даних при старті фрагмента
+        if (adapter != null)
             adapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(adapter!=null)
+        // Зупинка прослуховування змін в базі даних при зупинці фрагмента
+        if (adapter != null)
             adapter.stopListening();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(adapter!=null)
+        // Оновлення списку чатів при відновленні фрагмента
+        if (adapter != null)
             adapter.notifyDataSetChanged();
     }
 }

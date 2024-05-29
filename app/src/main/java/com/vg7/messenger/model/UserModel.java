@@ -3,16 +3,18 @@ package com.vg7.messenger.model;
 import com.google.firebase.Timestamp;
 
 public class UserModel {
-    private String phone;
-    private String username;
-    private String status;
-    private Timestamp createdTimestamp;
-    private String userId;
-    private String fcmToken;
+    private String phone; // Номер телефону користувача
+    private String username; // Ім'я користувача
+    private String status; // Статус користувача
+    private Timestamp createdTimestamp; // Мітка часу створення облікового запису
+    private String userId; // Ідентифікатор користувача
+    private String fcmToken; // Токен Firebase Cloud Messaging (FCM)
 
+    // Конструктор за замовчуванням
     public UserModel() {
     }
 
+    // Конструктор для користувача з вказаною інформацією
     public UserModel(String phone, String username, String status, Timestamp createdTimestamp, String userId) {
         this.phone = phone;
         this.username = username;
@@ -20,6 +22,8 @@ public class UserModel {
         this.createdTimestamp = createdTimestamp;
         this.userId = userId;
     }
+
+    // Методи доступу до полів класу
 
     public String getPhone() {
         return phone;

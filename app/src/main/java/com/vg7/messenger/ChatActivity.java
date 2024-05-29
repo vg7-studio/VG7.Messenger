@@ -72,7 +72,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //get UserModel
+        // Отримати UserModel
         otherUser = AndroidUtil.getUserModelFromIntent(getIntent());
         chatroomId = FirebaseUtil.getChatroomId(FirebaseUtil.currentUserId(),otherUser.getUserId());
 
@@ -122,23 +122,23 @@ public class ChatActivity extends AppCompatActivity {
             if (selectedMediaUri != null) {
                 switch (requestCode) {
                     case REQUEST_PICK_PHOTO:
-                        // Обработка выбора фото
+                        // Обробка вибору фото
                         String photoMimeType = getContentResolver().getType(selectedMediaUri);
                         if (photoMimeType != null && photoMimeType.startsWith("image")) {
                             sendMediaMessageToUser(selectedMediaUri, "image");
-                            ImageView imageView = findViewById(R.id.right_chat_imageview); // Замените R.id.imageView на ваш ID ImageView
+                            ImageView imageView = findViewById(R.id.right_chat_imageview); // Замініть R.id.imageView на ваш ID ImageView
                             imageView.setImageURI(selectedMediaUri);
                         }
                         break;
                     case REQUEST_PICK_VIDEO:
-                        // Обработка выбора видео
+                        // Обробка вибору відео
                         String videoMimeType = getContentResolver().getType(selectedMediaUri);
                         if (videoMimeType != null && videoMimeType.startsWith("video")) {
                             sendMediaMessageToUser(selectedMediaUri, "video");
                         }
                         break;
                     case REQUEST_PICK_FILE:
-                        // Обработка выбора файла
+                        // Обробка вибору файлу
                         sendMediaMessageToUser(selectedMediaUri, "file");
                         break;
                 }
@@ -189,35 +189,35 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void sendMediaMessageToUser(Uri fileUri, String messageType) {
-        // Получите ссылку на Firebase Storage
+        // Отримати посилання на Firebase Storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
-        // Создайте уникальное имя для файла
+        // Створити унікальне ім'я файлу
         String fileName = System.currentTimeMillis() + (messageType.equals("image") ? ".jpg" : ".mp4");
         StorageReference fileRef = storageRef.child("uploads/" + fileName);
 
-        // Загрузите файл
+        // Завантажте файл
         fileRef.putFile(fileUri).addOnSuccessListener(taskSnapshot -> {
-            // Получите URL загруженного файла
+            // Отримати URL завантаженого файлу
             fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String fileUrl = uri.toString();
-                // Теперь отправьте URL как часть вашего сообщения
+                // Тепер відправте URL як частину вашого повідомлення
                 sendMessageWithMedia(fileUrl, messageType);
             });
         }).addOnFailureListener(exception -> {
-            // Обработка ошибки загрузки
+            // Обробка помилки завантаження
         });
     }
 
     void sendMessageWithMedia(String fileUrl, String messageType) {
-        // Обновите информацию о последнем сообщении в чате
+        // Оновіть інформацію про останнє повідомлення в чаті
         chatroomModel.setLastMessageTimestamp(Timestamp.now());
         chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
-        chatroomModel.setLastMessage(messageType.equals("image") ? "Image" : "Video");
+        chatroomModel.setLastMessage(messageType.equals("image") ? "Фото" : "Відео");
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
-        // Создайте объект сообщения с мультимедиа
+        // Створіть об'єкт повідомлення з мультимедіа
         ChatMessageModel chatMessageModel = new ChatMessageModel(fileUrl, FirebaseUtil.currentUserId(), Timestamp.now(), messageType, fileUrl);
         FirebaseUtil.getChatroomMessageReference(chatroomId).add(chatMessageModel)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -225,7 +225,7 @@ public class ChatActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()){
                             messageInput.setText("");
-                            sendNotification(messageType.equals("image") ? "Image" : "Video");
+                            sendNotification(messageType.equals("image") ? "Фото" : "Відео");
                         }
                     }
                 });
@@ -236,7 +236,7 @@ public class ChatActivity extends AppCompatActivity {
             if(task.isSuccessful()){
                 chatroomModel = task.getResult().toObject(ChatroomModel.class);
                 if(chatroomModel==null){
-                    //first time chat
+                    // перший чат
                     chatroomModel = new ChatroomModel(
                             chatroomId,
                             Arrays.asList(FirebaseUtil.currentUserId(),otherUser.getUserId()),
@@ -251,32 +251,32 @@ public class ChatActivity extends AppCompatActivity {
 
     void sendNotification(String message){
 
-       FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
-               UserModel currentUser = task.getResult().toObject(UserModel.class);
-               try{
-                   JSONObject jsonObject  = new JSONObject();
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                UserModel currentUser = task.getResult().toObject(UserModel.class);
+                try{
+                    JSONObject jsonObject  = new JSONObject();
 
-                   JSONObject notificationObj = new JSONObject();
-                   notificationObj.put("title",currentUser.getUsername());
-                   notificationObj.put("body",message);
+                    JSONObject notificationObj = new JSONObject();
+                    notificationObj.put("title",currentUser.getUsername());
+                    notificationObj.put("body",message);
 
-                   JSONObject dataObj = new JSONObject();
-                   dataObj.put("userId",currentUser.getUserId());
+                    JSONObject dataObj = new JSONObject();
+                    dataObj.put("userId",currentUser.getUserId());
 
-                   jsonObject.put("notification",notificationObj);
-                   jsonObject.put("data",dataObj);
-                   jsonObject.put("to",otherUser.getFcmToken());
+                    jsonObject.put("notification",notificationObj);
+                    jsonObject.put("data",dataObj);
+                    jsonObject.put("to",otherUser.getFcmToken());
 
-                   callApi(jsonObject);
+                    callApi(jsonObject);
 
 
-               }
-               catch (Exception e) {
-               }
+                }
+                catch (Exception e) {
+                }
 
-           }
-       });
+            }
+        });
 
     }
 
@@ -287,37 +287,37 @@ public class ChatActivity extends AppCompatActivity {
     public void onSelectMedia(String mediaType) {
         switch (mediaType) {
             case "photo":
-                // Обработка выбора фото
+                // Обробка вибору фото
                 openPhotoPicker();
                 break;
             case "video":
-                // Обработка выбора видео
+                // Обробка вибору відео
                 openVideoPicker();
                 break;
             case "file":
-                // Обработка выбора файла
+                // Обробка вибору файлу
                 openFilePicker();
                 break;
             default:
-                // Обработка других типов мультимедиа, если необходимо
+                // Обробка інших типів мультимедіа, якщо необхідно
                 break;
         }
     }
 
     private void openPhotoPicker() {
-        // Открыть окно выбора фото
+        // Відкрити вікно вибору фото
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, REQUEST_PICK_PHOTO);
     }
     private void openVideoPicker() {
-        // Открыть окно выбора видео
+        // Відкрити вікно вибору відео
         Intent videoPickerIntent = new Intent(Intent.ACTION_PICK);
         videoPickerIntent.setType("video/*");
         startActivityForResult(videoPickerIntent, REQUEST_PICK_VIDEO);
     }
     private void openFilePicker() {
-        // Открыть окно выбора файла
+        // Відкрити вікно вибору файлу
         Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         filePickerIntent.setType("*/*");
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
@@ -333,8 +333,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void callApi(JSONObject jsonObject){
-         MediaType JSON = MediaType.get("application/json; charset=utf-8");
-         OkHttpClient client = new OkHttpClient();
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
         String url = "https://fcm.googleapis.com/fcm/send";
         RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
         Request request = new Request.Builder()
@@ -354,23 +354,4 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

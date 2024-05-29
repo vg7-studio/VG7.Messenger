@@ -13,80 +13,78 @@ import java.util.List;
 
 public class FirebaseUtil {
 
+    // Повертає ідентифікатор поточного користувача
     public static String currentUserId(){
         return FirebaseAuth.getInstance().getUid();
     }
 
+    // Перевіряє, чи авторизований користувач
     public static boolean isLoggedIn(){
-        if(currentUserId()!=null){
-            return true;
-        }
-        return false;
+        return currentUserId() != null;
     }
 
+    // Повертає посилання на документ поточного користувача
     public static DocumentReference currentUserDetails(){
         return FirebaseFirestore.getInstance().collection("users").document(currentUserId());
     }
 
+    // Повертає посилання на колекцію всіх користувачів
     public static CollectionReference allUserCollectionReference(){
         return FirebaseFirestore.getInstance().collection("users");
     }
 
+    // Повертає посилання на чат за його ідентифікатором
     public static DocumentReference getChatroomReference(String chatroomId){
         return FirebaseFirestore.getInstance().collection("chatrooms").document(chatroomId);
     }
 
+    // Повертає посилання на колекцію повідомлень чату за його ідентифікатором
     public static CollectionReference getChatroomMessageReference(String chatroomId){
         return getChatroomReference(chatroomId).collection("chats");
     }
 
-    public static String getChatroomId(String userId1,String userId2){
-        if(userId1.hashCode()<userId2.hashCode()){
-            return userId1+"_"+userId2;
-        }else{
-            return userId2+"_"+userId1;
+    // Генерує унікальний ідентифікатор чату за ідентифікаторами користувачів
+    public static String getChatroomId(String userId1, String userId2){
+        if(userId1.hashCode() < userId2.hashCode()){
+            return userId1 + "_" + userId2;
+        } else {
+            return userId2 + "_" + userId1;
         }
     }
 
+    // Повертає посилання на колекцію всіх чатів
     public static CollectionReference allChatroomCollectionReference(){
         return FirebaseFirestore.getInstance().collection("chatrooms");
     }
 
+    // Повертає посилання на документ іншого користувача в чаті
     public static DocumentReference getOtherUserFromChatroom(List<String> userIds){
         if(userIds.get(0).equals(FirebaseUtil.currentUserId())){
             return allUserCollectionReference().document(userIds.get(1));
-        }else{
+        } else {
             return allUserCollectionReference().document(userIds.get(0));
         }
     }
 
+    // Перетворює мітку часу в рядок
     public static String timestampToString(Timestamp timestamp){
-        return new SimpleDateFormat("HH:MM").format(timestamp.toDate());
+        return new SimpleDateFormat("HH:mm").format(timestamp.toDate());
     }
 
+    // Вихід із облікового запису користувача
     public static void logout(){
         FirebaseAuth.getInstance().signOut();
     }
 
-    public static StorageReference  getCurrentProfilePicStorageRef(){
+    // Повертає посилання на зображення профілю поточного користувача в сховищі Firebase Storage
+    public static StorageReference getCurrentProfilePicStorageRef(){
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
     }
 
-    public static StorageReference  getOtherProfilePicStorageRef(String otherUserId){
+    // Повертає посилання на зображення профілю іншого користувача в сховищі Firebase Storage
+    public static StorageReference getOtherProfilePicStorageRef(String otherUserId){
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(otherUserId);
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-

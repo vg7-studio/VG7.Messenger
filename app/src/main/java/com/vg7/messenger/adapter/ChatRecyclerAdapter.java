@@ -37,16 +37,19 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
     private Context mContext;
     private ChatActivity mChatActivity;
 
+    // Конструктор адаптера чату
     public ChatRecyclerAdapter(@NonNull FirestoreRecyclerOptions<ChatMessageModel> options, Context context, ChatActivity chatActivity) {
         super(options);
         mContext = context;
         mChatActivity = chatActivity;
     }
 
+    // Метод для прив'язки даних до представлення RecyclerView
     @Override
     protected void onBindViewHolder(@NonNull ChatModelViewHolder holder, int position, @NonNull ChatMessageModel model) {
-        Log.i("ChatRecyclerAdapter", "Binding view at position: " + position);
+        Log.i("ChatRecyclerAdapter", "Прив'язка виду на позиції: " + position);
 
+        // Приховати всі елементи повідомлення перед тим, як вони будуть заповнені даними
         holder.leftChatTextview.setVisibility(View.GONE);
         holder.leftChatImageview.setVisibility(View.GONE);
         holder.leftChatVideoview.setVisibility(View.GONE);
@@ -54,13 +57,16 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         holder.rightChatImageview.setVisibility(View.GONE);
         holder.rightChatVideoview.setVisibility(View.GONE);
 
+        // Визначити відправника повідомлення
         boolean isSender = model.getSenderId().equals(FirebaseUtil.currentUserId());
 
+        // Визначити активний макет для повідомлення
         LinearLayout activeLayout = isSender ? holder.rightChatLayout : holder.leftChatLayout;
         TextView activeTextView = isSender ? holder.rightChatTextview : holder.leftChatTextview;
         ImageView activeImageView = isSender ? holder.rightChatImageview : holder.leftChatImageview;
         VideoView activeVideoView = isSender ? holder.rightChatVideoview : holder.leftChatVideoview;
 
+        // Відобразити активний макет відповідно до відправника
         if (isSender) {
             holder.leftChatLayout.setVisibility(View.GONE);
             holder.rightChatLayout.setVisibility(View.VISIBLE);
@@ -69,25 +75,30 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             holder.leftChatLayout.setVisibility(View.VISIBLE);
         }
 
+        // Обробити різні типи повідомлень
         String messageType = model.getMessageType();
         if ("text".equals(messageType)) {
+            // Відобразити текстове повідомлення
             activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
             activeTextView.setText(model.getMessage());
             activeTextView.setVisibility(View.VISIBLE);
         } else if ("image".equals(messageType)) {
+            // Відобразити зображення
             activeLayout.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
             Uri imageUri = Uri.parse(model.getMediaUrl());
-            Log.d("ChatRecyclerAdapter", "Loading image: " + imageUri.toString());
+            Log.d("ChatRecyclerAdapter", "Завантаження зображення: " + imageUri.toString());
             Glide.with(mContext)
                     .load(imageUri)
                     .into(activeImageView);
             activeImageView.setVisibility(View.VISIBLE);
 
+            // Обробити натискання на зображення
             activeImageView.setOnClickListener(v -> mChatActivity.openFullscreenImage(imageUri));
         } else if ("video".equals(messageType)) {
+            // Відобразити відео
             activeLayout.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
             Uri videoUri = Uri.parse(model.getMediaUrl());
-            Log.d("ChatRecyclerAdapter", "Loading video: " + videoUri.toString());
+            Log.d("ChatRecyclerAdapter", "Завантаження відео: " + videoUri.toString());
             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoUri.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
             if (thumbnail != null) {
                 Drawable drawable = new BitmapDrawable(mContext.getResources(), thumbnail);
@@ -96,6 +107,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             activeVideoView.setVideoURI(videoUri);
             activeVideoView.setVisibility(View.VISIBLE);
 
+            // Обробити натискання на відео
             activeVideoView.setOnPreparedListener(mp -> {
                 mp.setLooping(true);
                 activeVideoView.seekTo(1);
@@ -103,10 +115,12 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
 
             activeVideoView.setOnClickListener(v -> mChatActivity.openVideoPlayer(videoUri));
         } else if ("file".equals(messageType)) {
+            // Відобразити файл
             activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
-            activeTextView.setText("File:\n" + model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1) + "\nPress to open");
+            activeTextView.setText("Файл:\n" + model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1) + "\nНатисніть, щоб відкрити");
             activeTextView.setVisibility(View.VISIBLE);
 
+            // Обробити натискання на файл
             activeTextView.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(model.getMediaUrl()), "*/*");
@@ -116,13 +130,16 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         }
     }
 
+    // Створити новий ViewHolder
     @NonNull
     @Override
     public ChatModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Заповнити макет для повідомлення чату
         View view = LayoutInflater.from(mContext).inflate(R.layout.chat_message_recycler_row, parent, false);
         return new ChatModelViewHolder(view);
     }
 
+    // ViewHolder для повідомлень чату
     class ChatModelViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout leftChatLayout, rightChatLayout;
@@ -130,9 +147,11 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         ImageView leftChatImageview, rightChatImageview;
         VideoView leftChatVideoview, rightChatVideoview;
 
+        // Конструктор ViewHolder
         public ChatModelViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            // Знайти всі елементи макету
             leftChatLayout = itemView.findViewById(R.id.left_chat_layout);
             rightChatLayout = itemView.findViewById(R.id.right_chat_layout);
             leftChatTextview = itemView.findViewById(R.id.left_chat_textview);

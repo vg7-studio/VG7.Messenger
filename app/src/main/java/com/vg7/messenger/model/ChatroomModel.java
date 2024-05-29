@@ -5,21 +5,25 @@ import com.google.firebase.Timestamp;
 import java.util.List;
 
 public class ChatroomModel {
-    String chatroomId;
-    List<String> userIds;
-    Timestamp lastMessageTimestamp;
-    String lastMessageSenderId;
-    String lastMessage;
+    String chatroomId; // Ідентифікатор чату
+    List<String> userIds; // Список ідентифікаторів користувачів у чаті
+    Timestamp lastMessageTimestamp; // Мітка часу останнього повідомлення
+    String lastMessageSenderId; // Ідентифікатор відправника останнього повідомлення
+    String lastMessage; // Останнє повідомлення
 
+    // Конструктор за замовчуванням
     public ChatroomModel() {
     }
 
+    // Конструктор для чату з вказаною інформацією
     public ChatroomModel(String chatroomId, List<String> userIds, Timestamp lastMessageTimestamp, String lastMessageSenderId) {
         this.chatroomId = chatroomId;
         this.userIds = userIds;
         this.lastMessageTimestamp = lastMessageTimestamp;
         this.lastMessageSenderId = lastMessageSenderId;
     }
+
+    // Методи доступу до полів класу
 
     public String getChatroomId() {
         return chatroomId;

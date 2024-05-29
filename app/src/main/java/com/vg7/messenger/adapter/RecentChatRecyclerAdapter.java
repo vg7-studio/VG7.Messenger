@@ -29,63 +29,73 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<Chatroom
 
     Context context;
 
-    public RecentChatRecyclerAdapter(@NonNull FirestoreRecyclerOptions<ChatroomModel> options,Context context) {
+    // Конструктор адаптера останніх чатів
+    public RecentChatRecyclerAdapter(@NonNull FirestoreRecyclerOptions<ChatroomModel> options, Context context) {
         super(options);
         this.context = context;
     }
 
+    // Метод для прив'язки даних до представлення RecyclerView
     @Override
     protected void onBindViewHolder(@NonNull ChatroomModelViewHolder holder, int position, @NonNull ChatroomModel model) {
+        // Отримати інформацію про користувача чату
         FirebaseUtil.getOtherUserFromChatroom(model.getUserIds())
                 .get().addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            boolean lastMessageSentByMe = model.getLastMessageSenderId().equals(FirebaseUtil.currentUserId());
+                    if (task.isSuccessful()) {
+                        boolean lastMessageSentByMe = model.getLastMessageSenderId().equals(FirebaseUtil.currentUserId());
 
+                        // Отримати модель користувача
+                        UserModel otherUserModel = task.getResult().toObject(UserModel.class);
 
-                            UserModel otherUserModel = task.getResult().toObject(UserModel.class);
+                        // Отримати посилання на профільне зображення
+                        FirebaseUtil.getOtherProfilePicStorageRef(otherUserModel.getUserId()).getDownloadUrl()
+                                .addOnCompleteListener(t -> {
+                                    if (t.isSuccessful()) {
+                                        Uri uri = t.getResult();
+                                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
+                                    }
+                                });
 
-                            FirebaseUtil.getOtherProfilePicStorageRef(otherUserModel.getUserId()).getDownloadUrl()
-                                    .addOnCompleteListener(t -> {
-                                        if(t.isSuccessful()){
-                                            Uri uri  = t.getResult();
-                                            AndroidUtil.setProfilePic(context,uri,holder.profilePic);
-                                        }
-                                    });
+                        // Встановити інформацію про користувача та останнє повідомлення
+                        holder.usernameText.setText(otherUserModel.getUsername());
+                        if (lastMessageSentByMe)
+                            holder.lastMessageText.setText("Ви: " + model.getLastMessage());
+                        else
+                            holder.lastMessageText.setText(model.getLastMessage());
+                        holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
 
-                            holder.usernameText.setText(otherUserModel.getUsername());
-                            if(lastMessageSentByMe)
-                                holder.lastMessageText.setText("You : "+model.getLastMessage());
-                            else
-                                holder.lastMessageText.setText(model.getLastMessage());
-                            holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
-
-                            holder.itemView.setOnClickListener(v -> {
-                                //navigate to chat activity
-                                Intent intent = new Intent(context, ChatActivity.class);
-                                AndroidUtil.passUserModelAsIntent(intent,otherUserModel);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent);
-                            });
-
-                        }
+                        // Обробка натискання на елемент
+                        holder.itemView.setOnClickListener(v -> {
+                            // Перехід до активності чату
+                            Intent intent = new Intent(context, ChatActivity.class);
+                            AndroidUtil.passUserModelAsIntent(intent, otherUserModel);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        });
+                    }
                 });
     }
 
+    // Метод для створення нового ViewHolder
     @NonNull
     @Override
     public ChatroomModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.recent_chat_recycler_row,parent,false);
+        // Заповнити макет для рядка останніх чатів
+        View view = LayoutInflater.from(context).inflate(R.layout.recent_chat_recycler_row, parent, false);
         return new ChatroomModelViewHolder(view);
     }
 
-    class ChatroomModelViewHolder extends RecyclerView.ViewHolder{
+    // ViewHolder для рядків останніх чатів
+    class ChatroomModelViewHolder extends RecyclerView.ViewHolder {
         TextView usernameText;
         TextView lastMessageText;
         TextView lastMessageTime;
         ImageView profilePic;
 
+        // Конструктор ViewHolder
         public ChatroomModelViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Знайти всі елементи макету
             usernameText = itemView.findViewById(R.id.user_name_text);
             lastMessageText = itemView.findViewById(R.id.last_message_text);
             lastMessageTime = itemView.findViewById(R.id.last_message_time_text);
