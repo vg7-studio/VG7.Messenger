@@ -26,6 +26,7 @@
     <string name="updated_failed">Не вдалося оновити</string>
     <string name="invalid_username">Невірне ім\'я користувача</string>
     <string name="select_photo">Зображення</string>
+    <string name="close">Закрити</string>
     <string name="no">Ні</string>
     <string name="yes">Так</string>
     <string name="are_you_sure_you_want_to_leave_your_account">Ви впевнені, що хочете вийти з облікового запису?</string>

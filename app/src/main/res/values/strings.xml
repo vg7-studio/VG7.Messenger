@@ -36,6 +36,7 @@
     <string name="select_video">Video</string>
     <string name="select_file">File</string>
 
+    <string name="close">Close</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
 </resources>

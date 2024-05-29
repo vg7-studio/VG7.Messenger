@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,6 +58,8 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageView imagePicView;
 
+    Dialog dialog;
+
     private static final int REQUEST_PICK_PHOTO = 1;
     private static final int REQUEST_PICK_VIDEO = 2;
     private static final int REQUEST_PICK_FILE = 3;
@@ -102,6 +105,9 @@ public class ChatActivity extends AppCompatActivity {
             sendMessageToUser(message);
         }));
 
+        dialog = new Dialog(ChatActivity.this);
+        dialog.setContentView(R.layout.fragment_fullscreen_image_dialog);
+
         getOrCreateChatroomModel();
         setupChatRecyclerView();
     }
@@ -145,7 +151,7 @@ public class ChatActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<ChatMessageModel> options = new FirestoreRecyclerOptions.Builder<ChatMessageModel>()
                 .setQuery(query,ChatMessageModel.class).build();
 
-        adapter = new ChatRecyclerAdapter(options,getApplicationContext());
+        adapter = new ChatRecyclerAdapter(options,getApplicationContext(), this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setReverseLayout(true);
         recyclerView.setLayoutManager(manager);
@@ -302,14 +308,12 @@ public class ChatActivity extends AppCompatActivity {
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, REQUEST_PICK_PHOTO);
     }
-
     private void openVideoPicker() {
         // Открыть окно выбора видео
         Intent videoPickerIntent = new Intent(Intent.ACTION_PICK);
         videoPickerIntent.setType("video/*");
         startActivityForResult(videoPickerIntent, REQUEST_PICK_VIDEO);
     }
-
     private void openFilePicker() {
         // Открыть окно выбора файла
         Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -317,6 +321,14 @@ public class ChatActivity extends AppCompatActivity {
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
     }
 
+    public void openFullscreenImage(Uri imageUri) {
+        FullscreenImageDialog dialog = new FullscreenImageDialog(imageUri);
+        dialog.show(getSupportFragmentManager(), "open_image");
+    }
+    public void openVideoPlayer(Uri videoUri) {
+        VideoPlayerDialog dialog = new VideoPlayerDialog(videoUri);
+        dialog.show(getSupportFragmentManager(), "open_video");
+    }
 
     void callApi(JSONObject jsonObject){
          MediaType JSON = MediaType.get("application/json; charset=utf-8");
