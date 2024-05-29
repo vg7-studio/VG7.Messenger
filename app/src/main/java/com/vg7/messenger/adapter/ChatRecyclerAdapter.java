@@ -102,6 +102,17 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             });
 
             activeVideoView.setOnClickListener(v -> mChatActivity.openVideoPlayer(videoUri));
+        } else if ("file".equals(messageType)) {
+            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
+            activeTextView.setText("File:\n" + model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1) + "\nPress to open");
+            activeTextView.setVisibility(View.VISIBLE);
+
+            activeTextView.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(model.getMediaUrl()), "*/*");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            });
         }
     }
 
