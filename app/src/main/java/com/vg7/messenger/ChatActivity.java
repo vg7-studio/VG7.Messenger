@@ -194,7 +194,10 @@ public class ChatActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         // Створити унікальне ім'я файлу
-        String fileName = System.currentTimeMillis() + (messageType.equals("image") ? ".jpg" : ".mp4");
+        String fileName = System.currentTimeMillis() +
+                (messageType.equals("image") ? ".image" :
+                (messageType.equals("video") ? ".video" : ".file"));
+
         StorageReference fileRef = storageRef.child("uploads/" + fileName);
 
         // Завантажте файл
@@ -214,7 +217,8 @@ public class ChatActivity extends AppCompatActivity {
         // Оновіть інформацію про останнє повідомлення в чаті
         chatroomModel.setLastMessageTimestamp(Timestamp.now());
         chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
-        chatroomModel.setLastMessage(messageType.equals("image") ? "Фото" : "Відео");
+        chatroomModel.setLastMessage((messageType.equals("image") ? "Image" :
+                (messageType.equals("video") ? "Video" : "File")));
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
         // Створіть об'єкт повідомлення з мультимедіа
@@ -225,7 +229,8 @@ public class ChatActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()){
                             messageInput.setText("");
-                            sendNotification(messageType.equals("image") ? "Фото" : "Відео");
+                            sendNotification((messageType.equals("image") ? "New Image" :
+                                    (messageType.equals("video") ? "New Video" : "New File")));
                         }
                     }
                 });

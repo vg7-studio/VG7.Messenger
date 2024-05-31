@@ -13,6 +13,7 @@ import com.vg7.messenger.utils.FirebaseUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.vg7.messenger.utils.NotificationUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        NotificationUtils.checkNotificationPermission(this);
 
         // Ініціалізуємо фрагменти чату та профілю
         chatFragment = new ChatFragment();

@@ -32,4 +32,8 @@
     <string name="are_you_sure_you_want_to_leave_your_account">Вы уверены, что хотите выйти из своей учетной записи?</string>
     <string name="select_video">Видео</string>
     <string name="select_file">Файл</string>
+    <string name="enable_notifications">Уведомления</string>
+    <string name="notifications_are_disabled_message">Уведомления отключены. Пожалуйста, включите их в настройках, чтобы получать обновления.</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="cancel">Отмена</string>
 </resources>
