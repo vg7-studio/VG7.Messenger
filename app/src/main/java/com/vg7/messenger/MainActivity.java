@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this,SearchUserActivity.class));
         });
 
-        bottomNavigationView.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+        bottomNavigationView.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.off_black));
 
         // Встановлюємо слухача для нижньої навігаційної панелі
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {

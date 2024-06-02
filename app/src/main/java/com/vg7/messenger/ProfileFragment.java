@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,8 @@ public class ProfileFragment extends Fragment {
     EditText phoneInput;
     // Ввідні поля для зміни статусу користувача
     EditText statusInput;
+    // Вимикач для приховання телефонного номера
+    Switch hideNumberSwith;
     // Кнопка для збереження змін
     Button updateProfileBtn;
     // ProgressBar для відображення процесу змін
@@ -87,6 +90,7 @@ public class ProfileFragment extends Fragment {
         usernameInput = view.findViewById(R.id.profile_username);
         phoneInput = view.findViewById(R.id.profile_phone);
         statusInput = view.findViewById(R.id.profile_status);
+        hideNumberSwith = view.findViewById(R.id.profile_hide_phone_number);
         updateProfileBtn = view.findViewById(R.id.profle_update_btn);
         progressBar = view.findViewById(R.id.profile_progress_bar);
         logoutBtn = view.findViewById(R.id.logout_btn);
@@ -151,6 +155,7 @@ public class ProfileFragment extends Fragment {
         String newUsername = usernameInput.getText().toString();
         // Отримати новий статус користувача
         String newStatus = statusInput.getText().toString();
+        Boolean newHideNumber = hideNumberSwith.isChecked();
         if(newUsername.isEmpty() || newUsername.length() < 3){
             usernameInput.setError(getString(R.string.username_length_should_be_at_least_3_chars));
             return;
@@ -158,6 +163,7 @@ public class ProfileFragment extends Fragment {
         // Змінити дані користувача в модельному об'єкті
         currentUserModel.setUsername(newUsername);
         currentUserModel.setStatus(newStatus);
+        currentUserModel.setHideNumberValue(newHideNumber);
         setInProgress(true);
 
         if(selectedImageUri!=null){
@@ -166,7 +172,7 @@ public class ProfileFragment extends Fragment {
                     .addOnCompleteListener(task -> {
                         updateToFirestore();
                     });
-        }else{
+        } else{
             updateToFirestore();
         }
     }
@@ -203,6 +209,7 @@ public class ProfileFragment extends Fragment {
             usernameInput.setText(currentUserModel.getUsername());
             phoneInput.setText(currentUserModel.getPhone());
             statusInput.setText(currentUserModel.getStatus());
+            hideNumberSwith.setChecked(currentUserModel.getHideNumberValue());
         });
     }
 

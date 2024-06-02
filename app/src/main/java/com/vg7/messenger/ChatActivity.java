@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.vg7.messenger.adapter.ChatRecyclerAdapter;
@@ -81,25 +83,19 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chat_recycler_view);
         imagePicView = findViewById(R.id.profile_pic_image_view);
 
-        FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
-                .addOnCompleteListener(t -> {
-                    if(t.isSuccessful()){
-                        Uri uri  = t.getResult();
-                        AndroidUtil.setProfilePic(this,uri,imagePicView);
-                    }
-                });
+        loadProfilePicture();
 
         backBtn.setOnClickListener((v)->{
             onBackPressed();
         });
 
         imagePicView.setOnClickListener(v -> {
-            openUserProfile(otherUser.getUserId(), otherUser.getUsername(), otherUser.getPhone(), otherUser.getStatus());
+            openUserProfile(otherUser);
         });
 
         otherUsername.setText(otherUser.getUsername());
         otherUsername.setOnClickListener(v -> {
-            openUserProfile(otherUser.getUserId(), otherUser.getUsername(), otherUser.getPhone(), otherUser.getStatus());
+            openUserProfile(otherUser);
         });
 
         sendMediaBtn.setOnClickListener((v -> {
@@ -114,6 +110,25 @@ public class ChatActivity extends AppCompatActivity {
 
         getOrCreateChatroomModel();
         setupChatRecyclerView();
+
+        // Додати слухач змін для оновлення даних співрозмовника у реальному часі
+        FirebaseUtil.getUserDocumentReference(otherUser.getUserId()).addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Log.w("ChatActivity", "Listen failed.", e);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                UserModel updatedUser = snapshot.toObject(UserModel.class);
+                if (updatedUser != null) {
+                    otherUser = updatedUser;
+                    otherUsername.setText(otherUser.getUsername());
+                    loadProfilePicture();
+                }
+            } else {
+                Log.d("ChatActivity", "Current data: null");
+            }
+        });
     }
 
     @Override
@@ -168,6 +183,20 @@ public class ChatActivity extends AppCompatActivity {
                 recyclerView.smoothScrollToPosition(0);
             }
         });
+    }
+
+    private void loadProfilePicture() {
+        FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()) {
+                        Uri uri = t.getResult();
+                        runOnUiThread(() -> {
+                            // Очищаем существующий кеш для imageView, чтобы гарантировать загрузку последнего изображения
+                            Glide.with(this).clear(imagePicView);
+                            AndroidUtil.setProfilePic(this, uri, imagePicView);
+                        });
+                    }
+                });
     }
 
     void sendMessageToUser(String message){
@@ -328,8 +357,8 @@ public class ChatActivity extends AppCompatActivity {
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
     }
 
-    private void openUserProfile(String textImageUri, String textName, String textNumber, String textStatus) {
-        ProfileDialog dialog = new ProfileDialog(textImageUri, textName, textNumber, textStatus);
+    private void openUserProfile(UserModel model) {
+        ProfileDialog dialog = new ProfileDialog(model);
         dialog.show(getSupportFragmentManager(), "open_profile");
     }
 

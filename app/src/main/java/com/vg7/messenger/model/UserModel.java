@@ -9,18 +9,20 @@ public class UserModel {
     private Timestamp createdTimestamp; // Мітка часу створення облікового запису
     private String userId; // Ідентифікатор користувача
     private String fcmToken; // Токен Firebase Cloud Messaging (FCM)
+    private Boolean hideNumber; // Значення функції "Приховати номер телефону"
 
     // Конструктор за замовчуванням
     public UserModel() {
     }
 
     // Конструктор для користувача з вказаною інформацією
-    public UserModel(String phone, String username, String status, Timestamp createdTimestamp, String userId) {
+    public UserModel(String phone, String username, String status, Timestamp createdTimestamp, String userId, Boolean hideNumber) {
         this.phone = phone;
         this.username = username;
         this.status = status;
         this.createdTimestamp = createdTimestamp;
         this.userId = userId;
+        this.hideNumber = hideNumber;
     }
 
     // Методи доступу до полів класу
@@ -67,5 +69,11 @@ public class UserModel {
 
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+    public Boolean getHideNumberValue() { return hideNumber; }
+
+    public void setHideNumberValue(Boolean hideNumber) {
+        this.hideNumber = hideNumber;
     }
 }

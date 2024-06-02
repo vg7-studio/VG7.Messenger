@@ -33,6 +33,12 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("users").document(currentUserId());
     }
 
+    // Повертає посилання на документ користувача по ID
+    public static DocumentReference getUserDocumentReference(String userId) {
+        return FirebaseFirestore.getInstance().collection("users").document(userId);
+    }
+
+
     // Повертає посилання на колекцію всіх користувачів
     public static CollectionReference allUserCollectionReference(){
         return FirebaseFirestore.getInstance().collection("users");

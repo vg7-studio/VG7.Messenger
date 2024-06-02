@@ -19,6 +19,7 @@
     <string name="search_user">Search User</string>
     <string name="phone_number">Phone number</string>
     <string name="status">Status</string>
+    <string name="hide_phone_number">Hide phone number</string>
     <string name="update_profile">Update profile</string>
     <string name="logout">Logout</string>
     <string name="resend_otp_code">Resend OTP-code</string>

@@ -62,12 +62,38 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/profile_hide_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:thumbTint="@color/my_primary"
+            android:trackTint="@color/off_black"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:text="@string/hide_phone_number"
+            android:fontFamily="@font/spartan_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12sdp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/_15sdp"
         android:orientation="vertical">
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:background="@drawable/btn_rounded_corner"
             android:text="@string/update_profile"
             android:fontFamily="@font/spartan_bold"
@@ -75,7 +101,6 @@
         <ProgressBar
             android:layout_width="@dimen/_32sdp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
             android:indeterminateTint="@color/my_primary"
             android:layout_gravity="center"
             android:id="@+id/profile_progress_bar"/>

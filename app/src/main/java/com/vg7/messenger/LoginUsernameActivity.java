@@ -69,7 +69,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
             userModel.setUsername(username);
         }
         else {
-            userModel = new UserModel(phoneNumber, username, "", Timestamp.now(), FirebaseUtil.currentUserId());
+            userModel = new UserModel(phoneNumber, username, "", Timestamp.now(), FirebaseUtil.currentUserId(), false);
         }
 
         // Зберігаємо дані користувача в базі даних Firebase Firestore

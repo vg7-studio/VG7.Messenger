@@ -36,4 +36,5 @@
     <string name="notifications_are_disabled_message">Notifications are disabled. Please enable them in the settings to receive updates.</string>
     <string name="open_settings">Open Settings</string>
     <string name="cancel">Cancel</string>
+    <string name="hide_phone_number">Hide phone number</string>
 </resources>
