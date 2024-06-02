@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -59,8 +58,6 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageView imagePicView;
 
-    Dialog dialog;
-
     private static final int REQUEST_PICK_PHOTO = 1;
     private static final int REQUEST_PICK_VIDEO = 2;
     private static final int REQUEST_PICK_FILE = 3;
@@ -97,6 +94,10 @@ public class ChatActivity extends AppCompatActivity {
         });
         otherUsername.setText(otherUser.getUsername());
 
+        otherUsername.setOnClickListener(v -> {
+            openUserProfile(otherUser.getUserId(), otherUser.getUsername(), otherUser.getPhone(), otherUser.getStatus());
+        });
+
         sendMediaBtn.setOnClickListener((v -> {
             showMediaSelectionDialog();
         }));
@@ -106,9 +107,6 @@ public class ChatActivity extends AppCompatActivity {
                 return;
             sendMessageToUser(message);
         }));
-
-        dialog = new Dialog(ChatActivity.this);
-        dialog.setContentView(R.layout.fragment_fullscreen_image_dialog);
 
         getOrCreateChatroomModel();
         setupChatRecyclerView();
@@ -326,6 +324,11 @@ public class ChatActivity extends AppCompatActivity {
         Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         filePickerIntent.setType("*/*");
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
+    }
+
+    private void openUserProfile(String textImageUri, String textName, String textNumber, String textStatus) {
+        ProfileDialog dialog = new ProfileDialog(textImageUri, textName, textNumber, textStatus);
+        dialog.show(getSupportFragmentManager(), "open_profile");
     }
 
     public void openFullscreenImage(Uri imageUri) {

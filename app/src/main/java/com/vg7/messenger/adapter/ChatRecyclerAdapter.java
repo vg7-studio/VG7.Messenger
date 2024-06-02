@@ -108,11 +108,6 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             activeVideoView.setVisibility(View.VISIBLE);
 
             // Обробити натискання на відео
-            activeVideoView.setOnPreparedListener(mp -> {
-                mp.setLooping(true);
-                activeVideoView.seekTo(1);
-            });
-
             activeVideoView.setOnClickListener(v -> mChatActivity.openVideoPlayer(videoUri));
         } else if ("file".equals(messageType)) {
             // Відобразити файл

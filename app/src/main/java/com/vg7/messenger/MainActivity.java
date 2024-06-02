@@ -2,6 +2,7 @@ package com.vg7.messenger;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener((v)->{
             startActivity(new Intent(MainActivity.this,SearchUserActivity.class));
         });
+
+        bottomNavigationView.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
 
         // Встановлюємо слухача для нижньої навігаційної панелі
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {

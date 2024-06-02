@@ -88,7 +88,4 @@
         android:text="@string/logout"
         android:textColor="@color/off_black"
         android:id="@+id/logout_btn"/>
-
-
-
 </LinearLayout>
