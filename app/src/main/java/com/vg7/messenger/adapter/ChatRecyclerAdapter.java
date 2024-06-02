@@ -53,9 +53,13 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         holder.leftChatTextview.setVisibility(View.GONE);
         holder.leftChatImageview.setVisibility(View.GONE);
         holder.leftChatVideoview.setVisibility(View.GONE);
+        holder.leftChatFileLayout.setVisibility(View.GONE);
+        holder.leftChatFileTextview.setVisibility(View.GONE);
         holder.rightChatTextview.setVisibility(View.GONE);
         holder.rightChatImageview.setVisibility(View.GONE);
         holder.rightChatVideoview.setVisibility(View.GONE);
+        holder.rightChatFileLayout.setVisibility(View.GONE);
+        holder.rightChatFileTextview.setVisibility(View.GONE);
 
         // Визначити відправника повідомлення
         boolean isSender = model.getSenderId().equals(FirebaseUtil.currentUserId());
@@ -65,6 +69,8 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         TextView activeTextView = isSender ? holder.rightChatTextview : holder.leftChatTextview;
         ImageView activeImageView = isSender ? holder.rightChatImageview : holder.leftChatImageview;
         VideoView activeVideoView = isSender ? holder.rightChatVideoview : holder.leftChatVideoview;
+        LinearLayout activeFileLayout = isSender ? holder.rightChatFileLayout : holder.leftChatFileLayout;
+        TextView activeFileText = isSender ? holder.rightChatFileTextview : holder.leftChatFileTextview;
 
         // Відобразити активний макет відповідно до відправника
         if (isSender) {
@@ -79,7 +85,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         String messageType = model.getMessageType();
         if ("text".equals(messageType)) {
             // Відобразити текстове повідомлення
-            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
+            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_sender : R.color.chat_color_receiver));
             activeTextView.setText(model.getMessage());
             activeTextView.setVisibility(View.VISIBLE);
         } else if ("image".equals(messageType)) {
@@ -111,12 +117,13 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             activeVideoView.setOnClickListener(v -> mChatActivity.openVideoPlayer(videoUri));
         } else if ("file".equals(messageType)) {
             // Відобразити файл
-            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
-            activeTextView.setText("Файл:\n" + model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1) + "\nНатисніть, щоб відкрити");
-            activeTextView.setVisibility(View.VISIBLE);
+            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_sender : R.color.chat_color_receiver));
+            activeFileText.setText(model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1));
+            activeFileLayout.setVisibility(View.VISIBLE);
+            activeFileText.setVisibility(View.VISIBLE);
 
             // Обробити натискання на файл
-            activeTextView.setOnClickListener(v -> {
+            activeFileLayout.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(model.getMediaUrl()), "*/*");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -137,8 +144,8 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
     // ViewHolder для повідомлень чату
     class ChatModelViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout leftChatLayout, rightChatLayout;
-        TextView leftChatTextview, rightChatTextview;
+        LinearLayout leftChatLayout, rightChatLayout, leftChatFileLayout, rightChatFileLayout;
+        TextView leftChatTextview, rightChatTextview, leftChatFileTextview, rightChatFileTextview;
         ImageView leftChatImageview, rightChatImageview;
         VideoView leftChatVideoview, rightChatVideoview;
 
@@ -155,6 +162,10 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             rightChatImageview = itemView.findViewById(R.id.right_chat_imageview);
             leftChatVideoview = itemView.findViewById(R.id.left_chat_videoview);
             rightChatVideoview = itemView.findViewById(R.id.right_chat_videoview);
+            leftChatFileLayout = itemView.findViewById(R.id.left_chat_file);
+            leftChatFileTextview = itemView.findViewById(R.id.left_chat_file_textview);
+            rightChatFileLayout = itemView.findViewById(R.id.right_chat_file);
+            rightChatFileTextview = itemView.findViewById(R.id.right_chat_file_textview);
         }
     }
 }

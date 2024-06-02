@@ -26,6 +26,31 @@
             android:layout_width="@dimen/_150sdp"
             android:layout_height="@dimen/_150sdp"
             android:visibility="gone"/>
+        <!-- Файл -->
+        <LinearLayout
+            android:id="@+id/left_chat_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/circular_bg"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/icon_file"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp"
+                android:text="File"
+                android:id="@+id/left_chat_file_textview"/>
+        </LinearLayout>
         <!-- Текстовое сообщение -->
         <TextView
             android:layout_width="wrap_content"
@@ -58,6 +83,31 @@
             android:layout_width="@dimen/_150sdp"
             android:layout_height="@dimen/_150sdp"
             android:visibility="gone"/>
+        <!-- Файл -->
+        <LinearLayout
+            android:id="@+id/right_chat_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/circular_bg"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/icon_file"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp"
+                android:text="File"
+                android:id="@+id/right_chat_file_textview"/>
+        </LinearLayout>
         <!-- Текстовое сообщение -->
         <TextView
             android:layout_width="wrap_content"
