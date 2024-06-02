@@ -85,7 +85,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         String messageType = model.getMessageType();
         if ("text".equals(messageType)) {
             // Відобразити текстове повідомлення
-            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_sender : R.color.chat_color_receiver));
+            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
             activeTextView.setText(model.getMessage());
             activeTextView.setVisibility(View.VISIBLE);
         } else if ("image".equals(messageType)) {
@@ -117,7 +117,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
             activeVideoView.setOnClickListener(v -> mChatActivity.openVideoPlayer(videoUri));
         } else if ("file".equals(messageType)) {
             // Відобразити файл
-            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_sender : R.color.chat_color_receiver));
+            activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_receiver : R.color.chat_color_sender));
             activeFileText.setText(model.getMessage());
             activeFileLayout.setVisibility(View.VISIBLE);
             activeFileText.setVisibility(View.VISIBLE);
