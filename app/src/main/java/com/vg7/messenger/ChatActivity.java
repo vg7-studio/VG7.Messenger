@@ -92,8 +92,12 @@ public class ChatActivity extends AppCompatActivity {
         backBtn.setOnClickListener((v)->{
             onBackPressed();
         });
-        otherUsername.setText(otherUser.getUsername());
 
+        imagePicView.setOnClickListener(v -> {
+            openUserProfile(otherUser.getUserId(), otherUser.getUsername(), otherUser.getPhone(), otherUser.getStatus());
+        });
+
+        otherUsername.setText(otherUser.getUsername());
         otherUsername.setOnClickListener(v -> {
             openUserProfile(otherUser.getUserId(), otherUser.getUsername(), otherUser.getPhone(), otherUser.getStatus());
         });
