@@ -118,7 +118,7 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
         } else if ("file".equals(messageType)) {
             // Відобразити файл
             activeLayout.setBackgroundTintList(ContextCompat.getColorStateList(mContext, isSender ? R.color.chat_color_sender : R.color.chat_color_receiver));
-            activeFileText.setText(model.getMediaUrl().substring(model.getMediaUrl().lastIndexOf('/') + 1));
+            activeFileText.setText(model.getMessage());
             activeFileLayout.setVisibility(View.VISIBLE);
             activeFileText.setVisibility(View.VISIBLE);
 

@@ -196,9 +196,7 @@ public class ChatActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         // Створити унікальне ім'я файлу
-        String fileName = System.currentTimeMillis() +
-                (messageType.equals("image") ? ".image" :
-                (messageType.equals("video") ? ".video" : ".file"));
+        String fileName = FirebaseUtil.getFileName(this, fileUri);
 
         StorageReference fileRef = storageRef.child("uploads/" + fileName);
 
@@ -208,14 +206,14 @@ public class ChatActivity extends AppCompatActivity {
             fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String fileUrl = uri.toString();
                 // Тепер відправте URL як частину вашого повідомлення
-                sendMessageWithMedia(fileUrl, messageType);
+                sendMessageWithMedia(fileName, fileUrl, messageType);
             });
         }).addOnFailureListener(exception -> {
             // Обробка помилки завантаження
         });
     }
 
-    void sendMessageWithMedia(String fileUrl, String messageType) {
+    void sendMessageWithMedia(String fileName, String fileUrl, String messageType) {
         // Оновіть інформацію про останнє повідомлення в чаті
         chatroomModel.setLastMessageTimestamp(Timestamp.now());
         chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
@@ -224,7 +222,7 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
         // Створіть об'єкт повідомлення з мультимедіа
-        ChatMessageModel chatMessageModel = new ChatMessageModel(fileUrl, FirebaseUtil.currentUserId(), Timestamp.now(), messageType, fileUrl);
+        ChatMessageModel chatMessageModel = new ChatMessageModel(fileName, FirebaseUtil.currentUserId(), Timestamp.now(), messageType, fileUrl);
         FirebaseUtil.getChatroomMessageReference(chatroomId).add(chatMessageModel)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
