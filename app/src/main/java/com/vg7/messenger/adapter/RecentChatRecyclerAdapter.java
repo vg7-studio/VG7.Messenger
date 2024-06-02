@@ -1,5 +1,7 @@
 package com.vg7.messenger.adapter;
 
+import static android.provider.Settings.System.getString;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -59,7 +61,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<Chatroom
                         // Встановити інформацію про користувача та останнє повідомлення
                         holder.usernameText.setText(otherUserModel.getUsername());
                         if (lastMessageSentByMe)
-                            holder.lastMessageText.setText("Ви: " + model.getLastMessage());
+                            holder.lastMessageText.setText(holder.itemView.getContext().getString(R.string.you) + ": " + model.getLastMessage());
                         else
                             holder.lastMessageText.setText(model.getLastMessage());
                         holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
@@ -84,6 +86,23 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<Chatroom
         View view = LayoutInflater.from(context).inflate(R.layout.recent_chat_recycler_row, parent, false);
         return new ChatroomModelViewHolder(view);
     }
+
+    public void updateChatroom(ChatroomModel updatedChatroom) {
+        // Знайдіть позицію чату у списку за його ідентифікатором
+        int index = -1;
+        for (int i = 0; i < getSnapshots().size(); i++) {
+            if (getItem(i).getChatroomId().equals(updatedChatroom.getChatroomId())) {
+                index = i;
+                break;
+            }
+        }
+
+        // Оновіть дані чату у списку
+        if (index != -1) {
+            getSnapshots().getSnapshot(index).getReference().set(updatedChatroom);
+        }
+    }
+
 
     // ViewHolder для рядків останніх чатів
     class ChatroomModelViewHolder extends RecyclerView.ViewHolder {

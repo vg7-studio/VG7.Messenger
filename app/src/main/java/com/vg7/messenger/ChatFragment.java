@@ -32,8 +32,28 @@ public class ChatFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyler_view);
         // Налаштування списку чатів
         setupRecyclerView();
+        // Налаштування слухача подій Firebase
+        setupFirebaseListener();
 
         return view;
+    }
+
+    private void setupFirebaseListener() {
+        FirebaseUtil.allChatroomCollectionReference()
+                .whereArrayContains("userIds", FirebaseUtil.currentUserId())
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        // Обротка помилки
+                        return;
+                    }
+                    // Перевірка наявності даних
+                    if (value != null && !value.isEmpty()) {
+                        for (ChatroomModel chatroom : value.toObjects(ChatroomModel.class)) {
+                            // Оновлення списку чатів за допомогою методу updateChatList()
+                            updateChatList(chatroom);
+                        }
+                    }
+                });
     }
 
     void setupRecyclerView() {
@@ -52,6 +72,15 @@ public class ChatFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
+
+    private void updateChatList(ChatroomModel chatroom) {
+        // Проверяем, что данные не пусты
+        if (chatroom != null) {
+            // Обновляем данные в адаптере
+            adapter.updateChatroom(chatroom);
+        }
+    }
+
 
     @Override
     public void onStart() {

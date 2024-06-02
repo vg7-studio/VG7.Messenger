@@ -111,9 +111,9 @@ public class ProfileDialog extends DialogFragment {
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful()) {
                         Uri uri = t.getResult();
-                        // Используем метод requireActivity().runOnUiThread для обновления UI в главном потоке
+                        // Використовуємо метод requireActivity().runOnUiThread для оновлення UI у головному потоці
                         requireActivity().runOnUiThread(() -> {
-                            // Очищаем существующий кеш для imageView, чтобы гарантировать загрузку последнего изображения
+                            // Очищаємо існуючий кеш для imageView, щоб гарантувати завантаження останнього зображення
                             Glide.with(requireContext()).clear(imageUri);
                             AndroidUtil.setProfilePic(requireContext(), uri, imageUri);
                         });

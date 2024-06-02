@@ -37,4 +37,5 @@
     <string name="open_settings">Відкрити налаштування</string>
     <string name="cancel">Скасувати</string>
     <string name="hide_phone_number">Приховати номер телефону</string>
+    <string name="you">Ви</string>
 </resources>

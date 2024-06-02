@@ -190,8 +190,9 @@ public class ChatActivity extends AppCompatActivity {
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful()) {
                         Uri uri = t.getResult();
+                        // Використовуємо метод runOnUiThread для оновлення UI у головному потоці
                         runOnUiThread(() -> {
-                            // Очищаем существующий кеш для imageView, чтобы гарантировать загрузку последнего изображения
+                            // Очищаємо існуючий кеш для imageView, щоб гарантувати завантаження останнього зображення
                             Glide.with(this).clear(imagePicView);
                             AndroidUtil.setProfilePic(this, uri, imagePicView);
                         });
