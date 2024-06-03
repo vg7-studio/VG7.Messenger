@@ -205,6 +205,7 @@ public class ChatActivity extends AppCompatActivity {
         chatroomModel.setLastMessageTimestamp(Timestamp.now());
         chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
         chatroomModel.setLastMessage(message);
+        chatroomModel.setType("private");
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
         ChatMessageModel chatMessageModel = new ChatMessageModel(message, FirebaseUtil.currentUserId(), Timestamp.now());
@@ -249,6 +250,7 @@ public class ChatActivity extends AppCompatActivity {
         chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
         chatroomModel.setLastMessage((messageType.equals("image") ? "Image" :
                 (messageType.equals("video") ? "Video" : "File")));
+        chatroomModel.setType("private");
         FirebaseUtil.getChatroomReference(chatroomId).set(chatroomModel);
 
         // Створіть об'єкт повідомлення з мультимедіа

@@ -10,6 +10,7 @@ public class ChatroomModel {
     Timestamp lastMessageTimestamp; // Мітка часу останнього повідомлення
     String lastMessageSenderId; // Ідентифікатор відправника останнього повідомлення
     String lastMessage; // Останнє повідомлення
+    String type; // Тип чату
 
     // Конструктор за замовчуванням
     public ChatroomModel() {
@@ -21,6 +22,7 @@ public class ChatroomModel {
         this.userIds = userIds;
         this.lastMessageTimestamp = lastMessageTimestamp;
         this.lastMessageSenderId = lastMessageSenderId;
+        this.type = "private";
     }
 
     // Методи доступу до полів класу
@@ -63,6 +65,14 @@ public class ChatroomModel {
 
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 }
