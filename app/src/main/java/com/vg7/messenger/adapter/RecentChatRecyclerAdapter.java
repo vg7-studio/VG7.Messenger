@@ -37,9 +37,13 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
     @Override
     protected void onBindViewHolder(@NonNull ChatroomModelViewHolder holder, int position, @NonNull BaseChatroomModel model) {
         if (model instanceof ChatroomModel) {
+            Log.d("RecentChatRecyclerAdapter", "Binding private chat");
             bindPrivateChat(holder, (ChatroomModel) model);
         } else if (model instanceof GroupChatroomModel) {
+            Log.d("RecentChatRecyclerAdapter", "Binding group chat");
             bindGroupChat(holder, (GroupChatroomModel) model);
+        } else {
+            Log.e("RecentChatRecyclerAdapter", "Unknown model type: " + model.getClass().getName());
         }
     }
 
@@ -97,7 +101,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
         try {
             Log.d("GroupModel", model.getGroupName());
             holder.usernameText.setText(model.getGroupName());
-            holder.lastMessageText.setText(model.getLastMessage());
+            holder.lastMessageText.setText(model.getLastMessage() != null ? model.getLastMessage() : "No messages");
             holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
 
             if (model.getGroupImageUrl() != null && !model.getGroupImageUrl().isEmpty()) {

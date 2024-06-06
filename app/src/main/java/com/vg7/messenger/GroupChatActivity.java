@@ -86,7 +86,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
         // Получение groupId из Intent
         Intent intent = getIntent();
-        groupId = intent.getStringExtra("groupId");
+        groupId = intent.getStringExtra("chatroomId");
 
         // Инициализация UI элементов
         groupChatRecyclerView = findViewById(R.id.group_chat_recycler_view);

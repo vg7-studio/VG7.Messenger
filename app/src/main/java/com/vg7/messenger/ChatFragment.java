@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +44,19 @@ public class ChatFragment extends Fragment {
                 .whereArrayContains("userIds", FirebaseUtil.currentUserId())
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
-                        // Обработка ошибки
+                        Log.e("ChatFragment", "Firebase listener error", error);
                         return;
                     }
                     // Перевірка наявності даних
                     if (value != null && !value.isEmpty()) {
                         for (DocumentSnapshot snapshot : value.getDocuments()) {
                             BaseChatroomModel chatroom = new ChatroomSnapshotParser().parseSnapshot(snapshot);
+                            Log.d("ChatFragment", "Chatroom received: " + chatroom.getChatroomId());
                             // Оновлення списку чатів за допомогою методу updateChatList()
                             updateChatList(chatroom);
                         }
+                    } else {
+                        Log.d("ChatFragment", "No chatrooms found");
                     }
                 });
     }
@@ -77,6 +81,7 @@ public class ChatFragment extends Fragment {
     private void updateChatList(BaseChatroomModel chatroom) {
         // Проверяем, что данные не пусты
         if (chatroom != null) {
+            Log.d("ChatFragment", "Updating chat list with: " + chatroom.getChatroomId());
             // Обновляем данные в адаптере
             adapter.updateChatroom(chatroom);
         }

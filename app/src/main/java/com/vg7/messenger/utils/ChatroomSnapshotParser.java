@@ -16,7 +16,7 @@ public class ChatroomSnapshotParser implements SnapshotParser<BaseChatroomModel>
     @Override
     public BaseChatroomModel parseSnapshot(DocumentSnapshot snapshot) {
         String type = snapshot.getString("type");
-        if ("group".equals(snapshot.getString(type))) {
+        if ("group".equals(type)) {
             return Objects.requireNonNull(snapshot.toObject(GroupChatroomModel.class));
         } else {
             return Objects.requireNonNull(snapshot.toObject(ChatroomModel.class));
