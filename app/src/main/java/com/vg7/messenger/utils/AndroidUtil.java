@@ -47,4 +47,13 @@ public class AndroidUtil {
                 .apply(RequestOptions.circleCropTransform()) // Обрізка зображення у формі кола
                 .into(imageView);
     }
+
+    // Метод для встановлення зображення профілю в ImageView
+    public static void setGroupPic(Context context, Uri imageUri, ImageView imageView) {
+        // Використання бібліотеки Glide для завантаження та відображення зображення
+        Glide.with(context)
+                .load(imageUri)
+                .apply(RequestOptions.circleCropTransform()) // Обрізка зображення у формі кола
+                .into(imageView);
+    }
 }

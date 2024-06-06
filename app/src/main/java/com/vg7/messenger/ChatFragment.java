@@ -1,17 +1,17 @@
 package com.vg7.messenger;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.vg7.messenger.adapter.RecentChatRecyclerAdapter;
-import com.vg7.messenger.model.ChatroomModel;
+import com.vg7.messenger.model.BaseChatroomModel;
+import com.vg7.messenger.utils.ChatroomSnapshotParser;
 import com.vg7.messenger.utils.FirebaseUtil;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
@@ -43,12 +43,13 @@ public class ChatFragment extends Fragment {
                 .whereArrayContains("userIds", FirebaseUtil.currentUserId())
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
-                        // Обротка помилки
+                        // Обработка ошибки
                         return;
                     }
                     // Перевірка наявності даних
                     if (value != null && !value.isEmpty()) {
-                        for (ChatroomModel chatroom : value.toObjects(ChatroomModel.class)) {
+                        for (DocumentSnapshot snapshot : value.getDocuments()) {
+                            BaseChatroomModel chatroom = new ChatroomSnapshotParser().parseSnapshot(snapshot);
                             // Оновлення списку чатів за допомогою методу updateChatList()
                             updateChatList(chatroom);
                         }
@@ -63,8 +64,8 @@ public class ChatFragment extends Fragment {
                 .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
 
         // Налаштування параметрів адаптера для списку чатів
-        FirestoreRecyclerOptions<ChatroomModel> options = new FirestoreRecyclerOptions.Builder<ChatroomModel>()
-                .setQuery(query, ChatroomModel.class).build();
+        FirestoreRecyclerOptions<BaseChatroomModel> options = new FirestoreRecyclerOptions.Builder<BaseChatroomModel>()
+                .setQuery(query, new ChatroomSnapshotParser()).build();
 
         // Створення адаптера та прикріплення його до списку
         adapter = new RecentChatRecyclerAdapter(options, getContext());
@@ -73,14 +74,13 @@ public class ChatFragment extends Fragment {
         adapter.startListening();
     }
 
-    private void updateChatList(ChatroomModel chatroom) {
+    private void updateChatList(BaseChatroomModel chatroom) {
         // Проверяем, что данные не пусты
         if (chatroom != null) {
             // Обновляем данные в адаптере
             adapter.updateChatroom(chatroom);
         }
     }
-
 
     @Override
     public void onStart() {

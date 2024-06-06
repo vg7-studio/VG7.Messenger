@@ -17,11 +17,13 @@
     <string name="sign_in">Sign in</string>
 
     <string name="search_user">Search User</string>
+    <string name="create_group">Create Group</string>
     <string name="phone_number">Phone number</string>
     <string name="status">Status</string>
     <string name="hide_phone_number">Hide phone number</string>
     <string name="update_profile">Update profile</string>
     <string name="logout">Logout</string>
+    <string name="group_name">Name</string>
     <string name="resend_otp_code">Resend OTP-code</string>
     <string name="resend_otp_code_in_seconds">Resend OTP-code in %d seconds</string>
     <string name="phone_number_not_valid">Phone number not valid</string>

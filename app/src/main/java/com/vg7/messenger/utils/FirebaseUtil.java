@@ -69,13 +69,20 @@ public class FirebaseUtil {
     }
 
     // Повертає посилання на документ іншого користувача в чаті
-    public static DocumentReference getOtherUserFromChatroom(List<String> userIds){
-        if(userIds.get(0).equals(FirebaseUtil.currentUserId())){
+    public static DocumentReference getOtherUserFromChatroom(List<String> userIds) {
+        // Проверка, что список содержит как минимум два элемента
+        if (userIds == null || userIds.size() < 2) {
+            throw new IllegalArgumentException("Invalid user IDs list");
+        }
+
+        // Проверка на совпадение с текущим пользователем и возвращение другого пользователя
+        if (userIds.get(0).equals(FirebaseUtil.currentUserId())) {
             return allUserCollectionReference().document(userIds.get(1));
         } else {
             return allUserCollectionReference().document(userIds.get(0));
         }
     }
+
 
     // Перетворює мітку часу в рядок
     public static String timestampToString(Timestamp timestamp){

@@ -38,4 +38,6 @@
     <string name="cancel">Скасувати</string>
     <string name="hide_phone_number">Приховати номер телефону</string>
     <string name="you">Ви</string>
+    <string name="create_group">Створити групу</string>
+    <string name="group_name">Назва</string>
 </resources>

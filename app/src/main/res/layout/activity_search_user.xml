@@ -36,18 +36,19 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/search_user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_margin="@dimen/_8sdp"
-        android:id="@+id/search_user_layout">
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp">
 
         <EditText
             android:id="@+id/seach_username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textColorHint="@color/off_black"
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
@@ -56,18 +57,21 @@
             android:background="@drawable/edit_text_rounded_corner"
             android:elevation="@dimen/_3sdp"
             android:hint="@string/username"
-            android:padding="@dimen/_8sdp" />
+            android:padding="@dimen/_8sdp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/off_black" />
+
         <ImageButton
+            android:id="@+id/search_user_btn"
             android:layout_width="@dimen/_31sdp"
             android:layout_height="@dimen/_31sdp"
-            android:src="@drawable/icon_search"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/my_primary"
-            android:padding="@dimen/_3sdp"
             android:layout_margin="@dimen/_8sdp"
-            android:id="@+id/search_user_btn"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/_3sdp"
+            android:src="@drawable/icon_search"
+            app:tint="@color/my_primary" />
 
     </RelativeLayout>
 

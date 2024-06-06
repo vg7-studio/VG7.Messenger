@@ -27,7 +27,23 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".GroupChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".SearchUserActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".CreateGroupActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <meta-data

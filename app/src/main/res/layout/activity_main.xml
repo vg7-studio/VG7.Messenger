@@ -43,6 +43,19 @@
         android:layout_above="@id/divider"
         android:id="@+id/main_frame_layout"/>
 
+    <ImageButton
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_above="@id/divider"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/circular_bg"
+        android:backgroundTint="@color/my_primary"
+        android:src="@drawable/add_group_icon"
+        android:tooltipText="@string/create_group"
+        android:id="@+id/main_create_group"/>
+
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="@dimen/_2sdp"

@@ -19,7 +19,7 @@ import com.vg7.messenger.utils.NotificationUtils;
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
-    ImageButton searchButton;
+    ImageButton searchButton, createGroupButton;
 
     ChatFragment chatFragment;
     ProfileFragment profileFragment;
@@ -37,10 +37,16 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         searchButton = findViewById(R.id.main_search_btn);
+        createGroupButton = findViewById(R.id.main_create_group);
 
         // Встановлюємо слухача для кнопки пошуку
         searchButton.setOnClickListener((v)->{
             startActivity(new Intent(MainActivity.this,SearchUserActivity.class));
+        });
+
+        // Встановлюємо слухача для кнопки створення групи
+        createGroupButton.setOnClickListener((v) -> {
+            startActivity(new Intent(MainActivity.this,CreateGroupActivity.class));
         });
 
         bottomNavigationView.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.off_black));

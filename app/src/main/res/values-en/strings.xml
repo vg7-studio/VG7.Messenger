@@ -38,4 +38,6 @@
     <string name="cancel">Cancel</string>
     <string name="hide_phone_number">Hide phone number</string>
     <string name="you">You</string>
+    <string name="create_group">Create Group</string>
+    <string name="group_name">Name</string>
 </resources>

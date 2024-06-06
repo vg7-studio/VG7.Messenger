@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/edit_text_rounded_corner"
+    android:layout_margin="@dimen/_8sdp"
+    android:elevation="@dimen/_2sdp">
+
+    <include layout="@layout/group_pic_view"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_8sdp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Group"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/spartan_bold"
+                android:id="@+id/user_name_text"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10:00"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/off_black"
+                android:fontFamily="@font/spartan_thin"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_centerVertical="true"
+                android:id="@+id/last_message_time_text"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Message"
+            android:textSize="@dimen/_10sdp"
+            android:textColor="@color/off_black"
+            android:id="@+id/last_message_text"/>
+    </LinearLayout>
+
+</LinearLayout>
