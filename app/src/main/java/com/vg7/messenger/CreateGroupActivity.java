@@ -107,6 +107,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             return;
         }
 
+        createGroupButton.setVisibility(View.GONE);
         createGroupProgressBar.setVisibility(View.VISIBLE);
 
         if (groupImageUri != null) {

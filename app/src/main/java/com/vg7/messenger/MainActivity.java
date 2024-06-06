@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 
 import com.vg7.messenger.utils.FirebaseUtil;
@@ -57,10 +58,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // Перехід до фрагменту чату
                 if(item.getItemId()==R.id.menu_chat){
+                    createGroupButton.setVisibility(View.VISIBLE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,chatFragment).commit();
                 }
                 // Перехід до фрагменту профілю
                 if(item.getItemId()==R.id.menu_profile){
+                    createGroupButton.setVisibility(View.GONE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,profileFragment).commit();
                 }
                 return true;

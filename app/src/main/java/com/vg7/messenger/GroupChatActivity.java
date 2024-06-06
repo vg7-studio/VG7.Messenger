@@ -58,18 +58,20 @@ import okhttp3.Response;
 
 public class GroupChatActivity extends AppCompatActivity {
 
-    private FirebaseFirestore db;
-    private FirebaseAuth auth;
-    private RecyclerView groupChatRecyclerView;
-    private EditText groupChatMessageInput;
-    private ImageButton messageSendBtn, mediaMessageSendBtn;
-    private TextView groupNameTextView;
-    private TextView groupMembersTextView;
+    FirebaseFirestore db;
+    FirebaseAuth auth;
+    RecyclerView groupChatRecyclerView;
+    EditText groupChatMessageInput;
+    ImageButton messageSendBtn, mediaMessageSendBtn;
+    ImageButton backBtn;
+    ImageView imagePicView;
+    TextView groupNameTextView;
+    TextView groupMembersTextView;
 
-    private GroupChatRecyclerAdapter adapter;
-    private GroupChatroomModel chatroomModel;
+    GroupChatRecyclerAdapter adapter;
+    GroupChatroomModel chatroomModel;
 
-    private String groupId;
+    String groupId;
 
     private static final int REQUEST_PICK_PHOTO = 1;
     private static final int REQUEST_PICK_VIDEO = 2;
@@ -89,6 +91,7 @@ public class GroupChatActivity extends AppCompatActivity {
         groupId = intent.getStringExtra("chatroomId");
 
         // Инициализация UI элементов
+        backBtn = findViewById(R.id.back_btn);
         groupChatRecyclerView = findViewById(R.id.group_chat_recycler_view);
         groupChatMessageInput = findViewById(R.id.group_chat_message_input);
         messageSendBtn = findViewById(R.id.message_send_btn);
@@ -98,6 +101,10 @@ public class GroupChatActivity extends AppCompatActivity {
 
         // Загрузка данных группы
         loadGroupData();
+
+        backBtn.setOnClickListener((v)-> {
+            onBackPressed();
+        });
 
         mediaMessageSendBtn.setOnClickListener((v -> {
             showMediaSelectionDialog();
