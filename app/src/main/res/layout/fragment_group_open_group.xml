@@ -31,6 +31,7 @@
             android:layout_toEndOf="@id/open_group_pic_layout"
             android:layout_centerVertical="true"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,15 +63,15 @@
                 android:id="@+id/open_group_edit"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
                 android:src="@drawable/icon_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:tint="@color/white"/>
             <ImageButton
-                android:id="@+id/open_group_delete"
+                android:id="@+id/open_group_more"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/icon_delete"
+                android:src="@drawable/icon_more"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:tint="@color/white"/>
         </LinearLayout>
