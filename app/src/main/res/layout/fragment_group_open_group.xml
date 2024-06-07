@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_20sdp"
+    android:background="@drawable/shape_dialog"
+    android:backgroundTint="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:background="@color/my_primary">
+
+        <ImageButton
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/icon_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/white"
+            android:layout_centerVertical="true"
+            android:id="@+id/back_btn"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_toEndOf="@id/open_group_pic_layout"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Group"
+                android:textSize="@dimen/_17sdp"
+                android:fontFamily="@font/spartan_bold"
+                android:textColor="@color/white"
+                android:id="@+id/open_group_name"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 member"
+                android:textSize="@dimen/_12sdp"
+                android:fontFamily="@font/spartan_regular"
+                android:textColor="@color/off_white"
+                android:id="@+id/open_group_members"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
+
+            <ImageButton
+                android:id="@+id/open_group_edit"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:src="@drawable/icon_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/white"/>
+            <ImageButton
+                android:id="@+id/open_group_delete"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/icon_delete"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/white"/>
+        </LinearLayout>
+
+        <include layout="@layout/group_pic_view"
+            android:layout_width="@dimen/_37sdp"
+            android:layout_height="@dimen/_37sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/back_btn"
+            android:id="@+id/open_group_pic_layout"
+            />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

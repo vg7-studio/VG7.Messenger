@@ -110,6 +110,14 @@ public class GroupChatActivity extends AppCompatActivity {
             onBackPressed();
         });
 
+        groupImagePicView.setOnClickListener((v -> {
+            openGroup(chatroomModel);
+        }));
+
+        groupNameTextView.setOnClickListener((v -> {
+            openGroup(chatroomModel);
+        }));
+
         mediaMessageSendBtn.setOnClickListener((v -> {
             showMediaSelectionDialog();
         }));
