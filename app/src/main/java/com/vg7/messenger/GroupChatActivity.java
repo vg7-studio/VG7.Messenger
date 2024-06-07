@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +38,7 @@ import com.vg7.messenger.model.ChatroomModel;
 import com.vg7.messenger.model.GroupChatMessageModel;
 import com.vg7.messenger.model.GroupChatroomModel;
 import com.vg7.messenger.model.UserModel;
+import com.vg7.messenger.utils.AndroidUtil;
 import com.vg7.messenger.utils.FirebaseUtil;
 
 import org.json.JSONObject;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -64,7 +67,7 @@ public class GroupChatActivity extends AppCompatActivity {
     EditText groupChatMessageInput;
     ImageButton messageSendBtn, mediaMessageSendBtn;
     ImageButton backBtn;
-    ImageView imagePicView;
+    ImageView groupImagePicView;
     TextView groupNameTextView;
     TextView groupMembersTextView;
 
@@ -92,6 +95,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
         // Инициализация UI элементов
         backBtn = findViewById(R.id.back_btn);
+        groupImagePicView = findViewById(R.id.profile_pic_image_view);
         groupChatRecyclerView = findViewById(R.id.group_chat_recycler_view);
         groupChatMessageInput = findViewById(R.id.group_chat_message_input);
         messageSendBtn = findViewById(R.id.message_send_btn);
@@ -148,20 +152,58 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void loadGroupData() {
-        // Загрузка информации о группе из Firestore
-        DocumentReference groupRef = db.collection("chatrooms").document(groupId);
-        groupRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                String groupName = documentSnapshot.getString("groupName");
-                List<String> userIds = (List<String>) documentSnapshot.get("userIds");
+        if (groupId == null) {
+            // Добавляем прослушиватель изменений к документу с groupId
+            DocumentReference groupIdRef = db.collection("chatrooms").document("groupId");
+            groupIdRef.addSnapshotListener((documentSnapshot, error) -> {
+                if (error != null) {
+                    // Обработка ошибки
+                    return;
+                }
 
-                groupNameTextView.setText(groupName);
-                groupMembersTextView.setText(userIds.size() + " members");
-            }
-        }).addOnFailureListener(e -> {
-            // Обработка ошибки
-        });
+                // Проверяем, существует ли документ и содержит ли он нужные данные
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // Получаем groupId из документа
+                    groupId = documentSnapshot.getId();
+
+                    // Загружаем данные группы
+                    loadGroupData();
+                }
+            });
+        } else {
+            // Теперь groupId доступен, можно загружать данные группы
+            DocumentReference groupRef = db.collection("chatrooms").document(groupId);
+            groupRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String groupName = documentSnapshot.getString("groupName");
+                    String membersText;
+                    List<String> userIds = (List<String>) documentSnapshot.get("userIds");
+
+                    if (documentSnapshot.getString("groupImageUrl") != null && !Objects.requireNonNull(documentSnapshot.getString("groupImageUrl")).isEmpty()) {
+                        Uri uri = Uri.parse(documentSnapshot.getString("groupImageUrl"));
+                        AndroidUtil.setProfilePic(this, uri, groupImagePicView);
+                    }
+                    int numMembers = userIds.size();
+
+                    if (numMembers == 1) {
+                        membersText = "1 " + getString(R.string.member);
+                    } else if (numMembers % 10 == 1 && numMembers != 11) {
+                        membersText = numMembers + " " + getString(R.string.member);
+                    } else if (numMembers % 10 >= 2 && numMembers % 10 <= 4 && (numMembers < 10 || numMembers > 20)) {
+                        membersText = numMembers + " " + getString(R.string.member2);
+                    } else {
+                        membersText = numMembers + " " + getString(R.string.member3);
+                    }
+
+                    groupNameTextView.setText(groupName);
+                    groupMembersTextView.setText(membersText);
+                }
+            }).addOnFailureListener(e -> {
+                // Обработка ошибки
+            });
+        }
     }
+
 
     void setupGroupChatRecyclerView(){
         Query query = FirebaseUtil.getChatroomMessageReference(groupId)
@@ -317,9 +359,9 @@ public class GroupChatActivity extends AppCompatActivity {
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
     }
 
-    private void openUserProfile(UserModel model) {
-        ProfileDialog dialog = new ProfileDialog(model);
-        dialog.show(getSupportFragmentManager(), "open_profile");
+    private void openGroup(GroupChatroomModel model) {
+        GroupDialog dialog = new GroupDialog(model);
+        dialog.show(getSupportFragmentManager(), "open_group");
     }
 
     public void openFullscreenImage(Uri imageUri) {

@@ -33,7 +33,14 @@
     <string name="updated_successfully">Updated successfully</string>
     <string name="updated_failed">Updated failed</string>
     <string name="invalid_username">Invalid Username</string>
+    <string name="failed_to_upload_image">Failed to upload image</string>
+    <string name="group_name_is_required">Group name is required</string>
+    <string name="group_name_is_required2">Group name must be at least 4 characters long</string>
     <string name="are_you_sure_you_want_to_leave_your_account">Are you sure you want to leave your account?</string>
+
+    <string name="member">member</string>
+    <string name="member2">members</string>
+    <string name="member3">members</string>
 
     <string name="enable_notifications">Enable Notifications</string>
     <string name="notifications_are_disabled_message">Notifications are disabled. Please enable them in the settings to receive updates.</string>

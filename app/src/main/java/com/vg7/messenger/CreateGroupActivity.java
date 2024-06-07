@@ -1,5 +1,6 @@
 package com.vg7.messenger;
 
+import static com.vg7.messenger.utils.AndroidUtil.showToast;
 import static java.security.AccessController.getContext;
 
 import android.app.Activity;
@@ -98,11 +99,11 @@ public class CreateGroupActivity extends AppCompatActivity {
         String groupName = groupNameEditText.getText().toString().trim();
 
         if (groupName.isEmpty()) {
-            groupNameEditText.setError("Group name is required");
+            groupNameEditText.setError(getString(R.string.group_name_is_required));
             groupNameEditText.requestFocus();
             return;
         } else if (groupName.length() < 4) {
-            groupNameEditText.setError("Group name must be at least 4 characters long");
+            groupNameEditText.setError(getString(R.string.group_name_is_required2));
             groupNameEditText.requestFocus();
             return;
         }
@@ -124,7 +125,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> saveGroupToDatabase(groupName, uri.toString())))
                 .addOnFailureListener(e -> {
                     createGroupProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(CreateGroupActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateGroupActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -157,27 +158,21 @@ public class CreateGroupActivity extends AppCompatActivity {
                                 db.collection("chatrooms").document(groupId).collection("members").document(currentUserId).set(currentUserModel)
                                         .addOnSuccessListener(memberVoid -> {
                                             createGroupProgressBar.setVisibility(View.GONE);
-                                            Toast.makeText(CreateGroupActivity.this, "Group created successfully", Toast.LENGTH_SHORT).show();
 
-                                            Intent intent = new Intent(CreateGroupActivity.this, GroupChatActivity.class);
-                                            intent.putExtra("groupId", groupId);
-                                            startActivity(intent);
+                                            showToast(this, "Success");
 
                                             finish();
                                         })
                                         .addOnFailureListener(e -> {
                                             createGroupProgressBar.setVisibility(View.GONE);
-                                            Toast.makeText(CreateGroupActivity.this, "Failed to add user to members", Toast.LENGTH_SHORT).show();
                                         });
                             })
                             .addOnFailureListener(e -> {
                                 createGroupProgressBar.setVisibility(View.GONE);
-                                Toast.makeText(CreateGroupActivity.this, "Failed to add user to admins", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
                     createGroupProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(CreateGroupActivity.this, "Failed to create group", Toast.LENGTH_SHORT).show();
                 });
     }
 }

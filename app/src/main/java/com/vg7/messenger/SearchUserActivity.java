@@ -30,7 +30,7 @@ public class SearchUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        // Ініціалізація елементів уявлень
+        // Инициализация элементов представлений
         searchInput = findViewById(R.id.seach_username_input);
         searchButton = findViewById(R.id.search_user_btn);
         backButton = findViewById(R.id.back_btn);
@@ -38,20 +38,23 @@ public class SearchUserActivity extends AppCompatActivity {
 
         searchInput.requestFocus();
 
-        // Встановлення слухачів
+        // Установка слушателей
         backButton.setOnClickListener(v -> onBackPressed());
         searchButton.setOnClickListener(v -> {
             String searchTerm = searchInput.getText().toString();
-            if(searchTerm.isEmpty() || searchTerm.length() < 3){
+            if (searchTerm.isEmpty() || searchTerm.length() < 3) {
                 searchInput.setError(getString(R.string.invalid_username));
                 return;
             }
             setupSearchRecyclerView(searchTerm);
         });
+
+        // Инициализация RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    void setupSearchRecyclerView(String searchTerm){
-        // Налаштування запиту до Firestore
+    void setupSearchRecyclerView(String searchTerm) {
+        // Настройка запроса к Firestore
         Query query = FirebaseUtil.allUserCollectionReference()
                 .whereGreaterThanOrEqualTo("username", searchTerm)
                 .whereLessThanOrEqualTo("username", searchTerm + '\uf8ff');
@@ -59,9 +62,12 @@ public class SearchUserActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();
 
-        // Ініціалізація та налаштування адаптера
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+
+        // Инициализация и настройка адаптера
         adapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
@@ -69,21 +75,21 @@ public class SearchUserActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(adapter != null)
+        if (adapter != null)
             adapter.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(adapter != null)
+        if (adapter != null)
             adapter.stopListening();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(adapter != null)
+        if (adapter != null)
             adapter.startListening();
     }
 }

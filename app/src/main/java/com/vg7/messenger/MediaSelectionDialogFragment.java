@@ -37,8 +37,15 @@ public class MediaSelectionDialogFragment extends DialogFragment {
 
     // Метод, який викликається при виборі мультимедіа
     private void onSelectMedia(String mediaType) {
-        // Викликаємо метод onSelectMedia активності ChatActivity та закриваємо діалогове вікно
-        ((ChatActivity) requireActivity()).onSelectMedia(mediaType);
+        // Проверяем, является ли текущая активность экземпляром ChatActivity
+        if (requireActivity() instanceof ChatActivity) {
+            // Если да, вызываем метод onSelectMedia в ChatActivity
+            ((ChatActivity) requireActivity()).onSelectMedia(mediaType);
+        } else if (requireActivity() instanceof GroupChatActivity) {
+            // Если нет, проверяем, является ли текущая активность экземпляром GroupChatActivity
+            ((GroupChatActivity) requireActivity()).onSelectMedia(mediaType);
+        }
+        // Закрываем диалоговое окно
         dismiss();
     }
 }

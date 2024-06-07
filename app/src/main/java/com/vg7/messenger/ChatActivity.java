@@ -51,6 +51,7 @@ public class ChatActivity extends AppCompatActivity {
     String chatroomId;
     ChatroomModel chatroomModel;
     ChatRecyclerAdapter adapter;
+    String source;
 
     EditText messageInput;
     ImageButton sendMediaBtn;
@@ -84,10 +85,9 @@ public class ChatActivity extends AppCompatActivity {
         imagePicView = findViewById(R.id.profile_pic_image_view);
 
         loadProfilePicture();
+        source = getIntent().getStringExtra("source");
 
-        backBtn.setOnClickListener((v)->{
-            onBackPressed();
-        });
+        backBtn.setOnClickListener(v -> { navigateBack(); });
 
         imagePicView.setOnClickListener(v -> {
             openUserProfile(otherUser);
@@ -160,6 +160,19 @@ public class ChatActivity extends AppCompatActivity {
                         break;
                 }
             }
+        }
+    }
+
+    private void navigateBack() {
+        if ("MainActivity".equals(source)) {
+            onBackPressed();
+        } else if ("SearchUserActivity".equals(source)) {
+            Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            super.onBackPressed(); // На случай если source не был передан
         }
     }
 

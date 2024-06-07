@@ -56,6 +56,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
             Intent intent = new Intent(context, ChatActivity.class);
             AndroidUtil.passUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("source", "SearchUserActivity");
             context.startActivity(intent);
         });
     }

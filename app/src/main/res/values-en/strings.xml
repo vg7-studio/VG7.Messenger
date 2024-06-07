@@ -40,4 +40,10 @@
     <string name="you">You</string>
     <string name="create_group">Create Group</string>
     <string name="group_name">Name</string>
+    <string name="failed_to_upload_image">Failed to upload image</string>
+    <string name="group_name_is_required">Group name is required</string>
+    <string name="group_name_is_required2">Group name must be at least 4 characters long</string>
+    <string name="member">member</string>
+    <string name="member2">members</string>
+    <string name="member3">members</string>
 </resources>

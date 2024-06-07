@@ -1,7 +1,6 @@
 package com.vg7.messenger;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;

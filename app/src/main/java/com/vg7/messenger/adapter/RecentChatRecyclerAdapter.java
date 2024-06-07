@@ -83,6 +83,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
                                     Intent intent = new Intent(context, ChatActivity.class);
                                     AndroidUtil.passUserModelAsIntent(intent, otherUserModel);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra("source", "MainActivity");
                                     context.startActivity(intent);
                                 });
                             } else {

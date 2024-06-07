@@ -40,4 +40,10 @@
     <string name="you">Ви</string>
     <string name="create_group">Створити групу</string>
     <string name="group_name">Назва</string>
+    <string name="failed_to_upload_image">Не вдалося завантажити зображення</string>
+    <string name="group_name_is_required">Вкажіть назву групи</string>
+    <string name="group_name_is_required2">Назва групи має містити не менше 4 символів</string>
+    <string name="member">учасник</string>
+    <string name="member2">учасника</string>
+    <string name="member3">учасників</string>
 </resources>
