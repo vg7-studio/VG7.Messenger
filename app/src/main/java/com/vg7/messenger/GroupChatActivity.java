@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -31,8 +33,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.Timestamp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.vg7.messenger.adapter.AdminAdapter;
 import com.vg7.messenger.adapter.ChatRecyclerAdapter;
 import com.vg7.messenger.adapter.GroupChatRecyclerAdapter;
+import com.vg7.messenger.adapter.MemberAdapter;
 import com.vg7.messenger.model.ChatMessageModel;
 import com.vg7.messenger.model.ChatroomModel;
 import com.vg7.messenger.model.GroupChatMessageModel;
@@ -61,6 +65,7 @@ import okhttp3.Response;
 
 public class GroupChatActivity extends AppCompatActivity {
 
+    private static final String TAG = "GroupChatActivity";
     FirebaseFirestore db;
     FirebaseAuth auth;
     RecyclerView groupChatRecyclerView;
@@ -76,6 +81,12 @@ public class GroupChatActivity extends AppCompatActivity {
 
     String groupId;
 
+    private AdminAdapter adminAdapter;
+    private MemberAdapter memberAdapter;
+
+    List<UserModel> adminsList = new ArrayList<>();
+    List<UserModel> membersList = new ArrayList<>();
+
     private static final int REQUEST_PICK_PHOTO = 1;
     private static final int REQUEST_PICK_VIDEO = 2;
     private static final int REQUEST_PICK_FILE = 3;
@@ -88,6 +99,10 @@ public class GroupChatActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+
+        // Инициализация адаптеров
+        adminAdapter = new AdminAdapter(this, adminsList);
+        memberAdapter = new MemberAdapter(this, membersList);
 
         // Получение groupId из Intent
         Intent intent = getIntent();
@@ -127,6 +142,12 @@ public class GroupChatActivity extends AppCompatActivity {
 
         getGroupChatroomModel();
         setupGroupChatRecyclerView();
+
+        setupAdminListener();
+        setupMemberListener();
+
+        // Синхронизация данных пользователей
+        syncUsersData();
     }
 
     @Override
@@ -161,25 +182,18 @@ public class GroupChatActivity extends AppCompatActivity {
 
     private void loadGroupData() {
         if (groupId == null) {
-            // Добавляем прослушиватель изменений к документу с groupId
             DocumentReference groupIdRef = db.collection("chatrooms").document("groupId");
             groupIdRef.addSnapshotListener((documentSnapshot, error) -> {
                 if (error != null) {
-                    // Обработка ошибки
                     return;
                 }
 
-                // Проверяем, существует ли документ и содержит ли он нужные данные
                 if (documentSnapshot != null && documentSnapshot.exists()) {
-                    // Получаем groupId из документа
                     groupId = documentSnapshot.getId();
-
-                    // Загружаем данные группы
                     loadGroupData();
                 }
             });
         } else {
-            // Теперь groupId доступен, можно загружать данные группы
             DocumentReference groupRef = db.collection("chatrooms").document(groupId);
             groupRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
@@ -211,7 +225,6 @@ public class GroupChatActivity extends AppCompatActivity {
             });
         }
     }
-
 
     void setupGroupChatRecyclerView(){
         Query query = FirebaseUtil.getChatroomMessageReference(groupId)
@@ -252,6 +265,131 @@ public class GroupChatActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setupAdminListener() {
+        db.collection("chatrooms").document(groupId).collection("admins")
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "Failed to listen for admin updates", e);
+                        return;
+                    }
+                    adminsList.clear();
+                    if (queryDocumentSnapshots != null) {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            UserModel admin = doc.toObject(UserModel.class);
+                            if (admin != null) {
+                                adminsList.add(admin);
+                            }
+                        }
+                    }
+                    adminAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Updated " + adminsList.size() + " admins");
+                });
+    }
+
+    private void setupMemberListener() {
+        db.collection("chatrooms").document(groupId).collection("members")
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "Failed to listen for member updates", e);
+                        return;
+                    }
+                    membersList.clear();
+                    if (queryDocumentSnapshots != null) {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            UserModel member = doc.toObject(UserModel.class);
+                            if (member != null && !isAdmin(member)) {
+                                membersList.add(member);
+                            }
+                        }
+                    }
+                    memberAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Updated " + membersList.size() + " members");
+                });
+    }
+
+    private void syncUsersData() {
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<UserModel> allUsers = new ArrayList<>();
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                UserModel user = doc.toObject(UserModel.class);
+                                allUsers.add(user);
+                            }
+
+                            db.collection("chatrooms").document(groupId).collection("admins")
+                                    .get()
+                                    .addOnCompleteListener(adminTask -> {
+                                        if (adminTask.isSuccessful() && adminTask.getResult() != null) {
+                                            List<UserModel> adminUsers = new ArrayList<>();
+                                            for (DocumentSnapshot doc : adminTask.getResult()) {
+                                                UserModel user = doc.toObject(UserModel.class);
+                                                // Проверяем наличие пользователя в коллекции "admins" группового чата по идентификатору
+                                                if (userExists(user, allUsers)) {
+                                                    adminUsers.add(user);
+                                                }
+                                            }
+                                            Log.d("AddedList", String.valueOf(adminUsers.size()));
+                                            updateCollection("admins", allUsers, adminUsers);
+                                        }
+                                    });
+
+                            db.collection("chatrooms").document(groupId).collection("members")
+                                    .get()
+                                    .addOnCompleteListener(memberTask -> {
+                                        if (memberTask.isSuccessful() && memberTask.getResult() != null) {
+                                            List<UserModel> memberUsers = new ArrayList<>();
+                                            for (DocumentSnapshot doc : memberTask.getResult()) {
+                                                UserModel user = doc.toObject(UserModel.class);
+                                                // Проверяем наличие пользователя в коллекции "members" группового чата по идентификатору
+                                                if (userExists(user, allUsers)) {
+                                                    memberUsers.add(user);
+                                                }
+                                            }
+                                            updateCollection("members", allUsers, memberUsers);
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    private void updateCollection(String collectionName, List<UserModel> allUsers, List<UserModel> specificUsers) {
+        for (UserModel user : allUsers) {
+            boolean userExists = false;
+            for (UserModel specificUser : specificUsers) {
+                if (user.getUserId().equals(specificUser.getUserId())) {
+                    userExists = true;
+                    break;
+                }
+            }
+            if (userExists) {
+                db.collection("chatrooms").document(groupId).collection(collectionName).document(user.getUserId()).set(user);
+            }
+        }
+    }
+
+    private boolean isAdmin(UserModel user) {
+        for (UserModel admin : adminsList) {
+            if (admin.getUserId().equals(user.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean userExists(UserModel user, List<UserModel> users) {
+        for (UserModel u : users) {
+            if (u.getUserId().equals(user.getUserId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void sendMessage() {

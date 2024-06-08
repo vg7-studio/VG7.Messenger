@@ -19,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.vg7.messenger.adapter.AdminAdapter;
 import com.vg7.messenger.adapter.MemberAdapter;
 import com.vg7.messenger.model.GroupChatroomModel;
@@ -98,70 +101,94 @@ public class GroupDialog extends DialogFragment {
         String groupId = model.getChatroomId();
 
         DocumentReference groupRef = db.collection("chatrooms").document(groupId);
-        groupRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                String groupNameText = documentSnapshot.getString("groupName");
-                String membersText;
-                List<String> userIds = (List<String>) documentSnapshot.get("userIds");
-
-                if (documentSnapshot.getString("groupImageUrl") != null && !Objects.requireNonNull(documentSnapshot.getString("groupImageUrl")).isEmpty()) {
-                    Uri uri = Uri.parse(documentSnapshot.getString("groupImageUrl"));
-                    AndroidUtil.setProfilePic(getContext(), uri, imageUri);
-                }
-                int numMembers = userIds.size();
-
-                if (numMembers == 1) {
-                    membersText = "1 " + getString(R.string.member);
-                } else if (numMembers % 10 == 1 && numMembers != 11) {
-                    membersText = numMembers + " " + getString(R.string.member);
-                } else if (numMembers % 10 >= 2 && numMembers % 10 <= 4 && (numMembers < 10 || numMembers > 20)) {
-                    membersText = numMembers + " " + getString(R.string.member2);
-                } else {
-                    membersText = numMembers + " " + getString(R.string.member3);
+        groupRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
                 }
 
-                groupName.setText(groupNameText);
-                groupMembers.setText(membersText);
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    String groupNameText = documentSnapshot.getString("groupName");
+                    String membersText;
+                    List<String> userIds = (List<String>) documentSnapshot.get("userIds");
+
+                    if (documentSnapshot.getString("groupImageUrl") != null && !Objects.requireNonNull(documentSnapshot.getString("groupImageUrl")).isEmpty()) {
+                        Uri uri = Uri.parse(documentSnapshot.getString("groupImageUrl"));
+                        AndroidUtil.setProfilePic(getContext(), uri, imageUri);
+                    }
+                    int numMembers = userIds.size();
+
+                    if (numMembers == 1) {
+                        membersText = "1 " + getString(R.string.member);
+                    } else if (numMembers % 10 == 1 && numMembers != 11) {
+                        membersText = numMembers + " " + getString(R.string.member);
+                    } else if (numMembers % 10 >= 2 && numMembers % 10 <= 4 && (numMembers < 10 || numMembers > 20)) {
+                        membersText = numMembers + " " + getString(R.string.member2);
+                    } else {
+                        membersText = numMembers + " " + getString(R.string.member3);
+                    }
+
+                    groupName.setText(groupNameText);
+                    groupMembers.setText(membersText);
+                }
             }
-        }).addOnFailureListener(e -> {
-            // Обработка ошибки
         });
 
         // Сначала загружаем админов
         db.collection("chatrooms").document(groupId).collection("admins")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                        UserModel admin = doc.toObject(UserModel.class);
-                        if (admin != null) {
-                            adminsList.add(admin);
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Failed to load admins", e);
+                            return;
+                        }
+
+                        if (queryDocumentSnapshots != null) {
+                            adminsList.clear();
+                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                                UserModel admin = doc.toObject(UserModel.class);
+                                if (admin != null) {
+                                    adminsList.add(admin);
+                                }
+                            }
+                            adminAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "Loaded " + adminsList.size() + " admins");
+
+                            // После загрузки админов загружаем участников
+                            loadMembers(groupId);
                         }
                     }
-                    adminAdapter.notifyDataSetChanged();
-                    Log.d(TAG, "Loaded " + adminsList.size() + " admins");
-
-                    // После загрузки админов загружаем участников
-                    loadMembers(groupId);
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to load admins", e));
+                });
     }
 
     private void loadMembers(String groupId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("chatrooms").document(groupId).collection("members")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                        UserModel member = doc.toObject(UserModel.class);
-                        if (member != null && !isAdmin(member)) {
-                            membersList.add(member);
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Failed to load members", e);
+                            return;
+                        }
+
+                        if (queryDocumentSnapshots != null) {
+                            membersList.clear();
+                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                                UserModel member = doc.toObject(UserModel.class);
+                                if (member != null && !isAdmin(member)) {
+                                    membersList.add(member);
+                                }
+                            }
+                            memberAdapter.notifyDataSetChanged();
+                            Log.d(TAG, "Loaded " + membersList.size() + " members");
                         }
                     }
-                    memberAdapter.notifyDataSetChanged();
-                    Log.d(TAG, "Loaded " + membersList.size() + " members");
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to load members", e));
+                });
     }
 
     private boolean isAdmin(UserModel user) {
