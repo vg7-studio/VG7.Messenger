@@ -76,6 +76,8 @@ public class GroupDialog extends DialogFragment {
         // Загрузка данных группы
         loadGroupData();
 
+        syncUsersData(); // Синхронизация данных
+
         builder.setView(view);
         return builder.create();
     }
@@ -164,29 +166,58 @@ public class GroupDialog extends DialogFragment {
                 });
     }
 
+    private void syncUsersData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Получаем идентификатор группы
+        String groupId = model.getChatroomId();
+
+        // Получаем админов группы
+        db.collection("chatrooms").document(groupId).collection("admins")
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "Failed to load admins", e);
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots != null) {
+                        adminsList.clear();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            UserModel admin = doc.toObject(UserModel.class);
+                            if (admin != null) {
+                                adminsList.add(admin);
+                            }
+                        }
+                        adminAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Loaded " + adminsList.size() + " admins");
+
+                        // После загрузки админов загружаем участников
+                        loadMembers(groupId);
+                    }
+                });
+    }
+
     private void loadMembers(String groupId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // Получаем участников группы
         db.collection("chatrooms").document(groupId).collection("members")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.e(TAG, "Failed to load members", e);
-                            return;
-                        }
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "Failed to load members", e);
+                        return;
+                    }
 
-                        if (queryDocumentSnapshots != null) {
-                            membersList.clear();
-                            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                                UserModel member = doc.toObject(UserModel.class);
-                                if (member != null && !isAdmin(member)) {
-                                    membersList.add(member);
-                                }
+                    if (queryDocumentSnapshots != null) {
+                        membersList.clear();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            UserModel member = doc.toObject(UserModel.class);
+                            if (member != null && !isAdmin(member)) {
+                                membersList.add(member);
                             }
-                            memberAdapter.notifyDataSetChanged();
-                            Log.d(TAG, "Loaded " + membersList.size() + " members");
                         }
+                        memberAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Loaded " + membersList.size() + " members");
                     }
                 });
     }

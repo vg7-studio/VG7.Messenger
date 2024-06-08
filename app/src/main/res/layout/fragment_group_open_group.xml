@@ -25,15 +25,16 @@
             android:id="@+id/back_btn"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
+            android:layout_toStartOf="@id/open_group_btns"
             android:layout_toEndOf="@id/open_group_pic_layout"
             android:layout_centerVertical="true"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Group"
                 android:textSize="@dimen/_17sdp"
@@ -57,7 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:id="@+id/open_group_btns">
 
             <ImageButton
                 android:id="@+id/open_group_edit"
