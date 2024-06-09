@@ -58,6 +58,7 @@ public class LeaveGroupDialog extends DialogFragment {
         return builder.create();
     }
 
+    // Метод залишення групи
     private void leaveGroup() {
         String userId = FirebaseUtil.currentUserId();
         FirebaseFirestore db = FirebaseFirestore.getInstance();

@@ -27,7 +27,7 @@ import com.vg7.messenger.utils.FirebaseUtil;
 
 public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChatroomModel, RecentChatRecyclerAdapter.ChatroomModelViewHolder> {
 
-    private Context context;
+    private Context context; // Контекст для доступу до ресурсів та інших компонентів
 
     public RecentChatRecyclerAdapter(@NonNull FirestoreRecyclerOptions<BaseChatroomModel> options, Context context) {
         super(options);
@@ -38,10 +38,10 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
     protected void onBindViewHolder(@NonNull ChatroomModelViewHolder holder, int position, @NonNull BaseChatroomModel model) {
         if (model instanceof ChatroomModel) {
             Log.d("RecentChatRecyclerAdapter", "Binding private chat");
-            bindPrivateChat(holder, (ChatroomModel) model);
+            bindPrivateChat(holder, (ChatroomModel) model); // Прив'язка приватного чату
         } else if (model instanceof GroupChatroomModel) {
             Log.d("RecentChatRecyclerAdapter", "Binding group chat");
-            bindGroupChat(holder, (GroupChatroomModel) model);
+            bindGroupChat(holder, (GroupChatroomModel) model); // Прив'язка групового чату
         } else {
             Log.e("RecentChatRecyclerAdapter", "Unknown model type: " + model.getClass().getName());
         }
@@ -50,12 +50,14 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
     @NonNull
     @Override
     public ChatroomModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Створення нового виду (View) для елемента списку
         View view = LayoutInflater.from(context).inflate(R.layout.recent_chat_recycler_row, parent, false);
         return new ChatroomModelViewHolder(view);
     }
 
     private void bindPrivateChat(@NonNull ChatroomModelViewHolder holder, @NonNull ChatroomModel model) {
         try {
+            // Отримання іншого користувача з чату
             FirebaseUtil.getOtherUserFromChatroom(model.getUserIds())
                     .get().addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult() != null) {
@@ -63,6 +65,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
                             if (otherUserModel != null) {
                                 boolean lastMessageSentByMe = model.getLastMessageSenderId().equals(FirebaseUtil.currentUserId());
 
+                                // Отримання URL профільної картинки іншого користувача
                                 FirebaseUtil.getOtherProfilePicStorageRef(otherUserModel.getUserId()).getDownloadUrl()
                                         .addOnCompleteListener(t -> {
                                             if (t.isSuccessful() && t.getResult() != null) {
@@ -73,12 +76,16 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
                                             }
                                         });
 
+                                // Встановлення тексту імені користувача
                                 holder.usernameText.setText(otherUserModel.getUsername());
+                                // Встановлення тексту останнього повідомлення
                                 holder.lastMessageText.setText(lastMessageSentByMe
                                         ? holder.itemView.getContext().getString(R.string.you) + ": " + model.getLastMessage()
                                         : model.getLastMessage());
+                                // Встановлення часу останнього повідомлення
                                 holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
 
+                                // Обробка натискання на елемент списку
                                 holder.itemView.setOnClickListener(v -> {
                                     Intent intent = new Intent(context, ChatActivity.class);
                                     AndroidUtil.passUserModelAsIntent(intent, otherUserModel);
@@ -101,10 +108,14 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
     private void bindGroupChat(@NonNull ChatroomModelViewHolder holder, @NonNull GroupChatroomModel model) {
         try {
             Log.d("GroupModel", model.getGroupName());
+            // Встановлення імені групи
             holder.usernameText.setText(model.getGroupName());
+            // Встановлення тексту останнього повідомлення
             holder.lastMessageText.setText(model.getLastMessage() != null ? model.getLastMessage() : "No messages");
+            // Встановлення часу останнього повідомлення
             holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
 
+            // Встановлення профільної картинки групи або значка за замовчуванням
             if (model.getGroupImageUrl() != null && !model.getGroupImageUrl().isEmpty()) {
                 Uri uri = Uri.parse(model.getGroupImageUrl());
                 AndroidUtil.setProfilePic(context, uri, holder.profilePic);
@@ -112,6 +123,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
                 holder.profilePic.setImageResource(R.drawable.group_icon);
             }
 
+            // Обробка натискання на елемент списку
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, GroupChatActivity.class);
                 intent.putExtra("chatroomId", model.getChatroomId());
@@ -125,6 +137,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
 
     public void updateChatroom(BaseChatroomModel updatedChatroom) {
         int index = -1;
+        // Пошук індексу оновленого чату
         for (int i = 0; i < getSnapshots().size(); i++) {
             if (getItem(i).getChatroomId().equals(updatedChatroom.getChatroomId())) {
                 index = i;
@@ -132,16 +145,17 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<BaseChat
             }
         }
 
+        // Оновлення чату, якщо знайдено відповідний індекс
         if (index != -1) {
             getSnapshots().getSnapshot(index).getReference().set(updatedChatroom);
         }
     }
 
     static class ChatroomModelViewHolder extends RecyclerView.ViewHolder {
-        TextView usernameText;
-        TextView lastMessageText;
-        TextView lastMessageTime;
-        ImageView profilePic;
+        TextView usernameText; // Текст для імені користувача
+        TextView lastMessageText; // Текст для останнього повідомлення
+        TextView lastMessageTime; // Текст для часу останнього повідомлення
+        ImageView profilePic; // Зображення профілю
 
         public ChatroomModelViewHolder(@NonNull View itemView) {
             super(itemView);

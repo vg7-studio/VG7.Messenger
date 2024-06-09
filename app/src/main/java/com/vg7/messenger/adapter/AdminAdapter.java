@@ -1,10 +1,5 @@
 package com.vg7.messenger.adapter;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import static java.security.AccessController.getContext;
-
-import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -17,9 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.vg7.messenger.ChatActivity;
 import com.vg7.messenger.GroupDialog;
-import com.vg7.messenger.ProfileDialog;
 import com.vg7.messenger.R;
 import com.vg7.messenger.model.UserModel;
 import com.vg7.messenger.utils.AndroidUtil;
@@ -29,15 +22,17 @@ import java.util.List;
 
 public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHolder> {
 
-    Context context;
-    List<UserModel> adminList;
-    GroupDialog dialog;
+    Context context; // Контекст для доступу до ресурсів та інших компонентів
+    List<UserModel> adminList; // Список адміністраторів
+    GroupDialog dialog; // Діалог для відображення профілю користувача
 
+    // Конструктор для ініціалізації адаптера з контекстом та списком адміністраторів
     public AdminAdapter(Context context, List<UserModel> adminList) {
         this.context = context;
         this.adminList = adminList;
     }
 
+    // Конструктор для ініціалізації адаптера з контекстом, діалогом та списком адміністраторів
     public AdminAdapter(Context context, GroupDialog dialog, List<UserModel> adminList) {
         this.context = context;
         this.dialog = dialog;
@@ -47,25 +42,31 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHol
     @NonNull
     @Override
     public AdminViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Створення нового виду (View) для елемента списку
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_recycler_row, parent, false);
         return new AdminViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdminViewHolder holder, int position) {
+        // Отримання адміністратора на поточній позиції
         UserModel admin = adminList.get(position);
+        // Встановлення імені адміністратора
         holder.adminName.setText(admin.getUsername());
 
+        // Встановлення номера телефону або приховування його
         if (!admin.getHideNumberValue()) {
             holder.adminPhoneNumber.setText(admin.getPhone());
         } else {
             holder.adminPhoneNumber.setText("*************");
         }
 
+        // Обробка натискання на елемент списку
         holder.itemView.setOnClickListener(v -> {
-            dialog.openUserProfile(admin);
+            dialog.openUserProfile(admin); // Відкриття профілю користувача у діалозі
         });
 
+        // Завантаження та встановлення профільної картинки адміністратора
         FirebaseUtil.getOtherProfilePicStorageRef(admin.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful() && t.getResult() != null) {
@@ -79,19 +80,19 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHol
 
     @Override
     public int getItemCount() {
-        return adminList.size();
+        return adminList.size(); // Повернення кількості елементів у списку адміністраторів
     }
 
     public static class AdminViewHolder extends RecyclerView.ViewHolder {
-        ImageView adminProfilePic;
-        TextView adminName;
-        TextView adminPhoneNumber;
+        ImageView adminProfilePic; // Зображення профілю адміністратора
+        TextView adminName; // Ім'я адміністратора
+        TextView adminPhoneNumber; // Номер телефону адміністратора
 
         public AdminViewHolder(@NonNull View itemView) {
             super(itemView);
-            adminProfilePic = itemView.findViewById(R.id.profile_pic_image_view);
-            adminName = itemView.findViewById(R.id.user_name_text);
-            adminPhoneNumber = itemView.findViewById(R.id.phone_text);
+            adminProfilePic = itemView.findViewById(R.id.profile_pic_image_view); // Ініціалізація зображення профілю
+            adminName = itemView.findViewById(R.id.user_name_text); // Ініціалізація імені адміністратора
+            adminPhoneNumber = itemView.findViewById(R.id.phone_text); // Ініціалізація номера телефону адміністратора
         }
     }
 }

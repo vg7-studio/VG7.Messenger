@@ -148,7 +148,7 @@ public class GroupChatActivity extends AppCompatActivity {
         setupAdminListener();
         setupMemberListener();
 
-        // Синхронизация данных пользователей и группы
+        // Синхронизацiя даних користувачiв та групи
         syncUsersData();
         syncGroupData();
     }
@@ -183,8 +183,9 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
+    // Завантаження даних группового чату
     private void loadGroupData() {
-        if (groupId == null) {
+        if (groupId == null) { // Повторне завантаження даних, в разi невдали получити ID групового чату
             DocumentReference groupIdRef = db.collection("chatrooms").document("groupId");
             groupIdRef.addSnapshotListener((documentSnapshot, error) -> {
                 if (error != null) {
@@ -200,15 +201,16 @@ public class GroupChatActivity extends AppCompatActivity {
             DocumentReference groupRef = db.collection("chatrooms").document(groupId);
             groupRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    String groupName = documentSnapshot.getString("groupName");
+                    String groupName = documentSnapshot.getString("groupName"); // Назва
                     String membersText;
                     List<String> userIds = (List<String>) documentSnapshot.get("userIds");
 
+                    // Зображення групи
                     if (documentSnapshot.getString("groupImageUrl") != null && !Objects.requireNonNull(documentSnapshot.getString("groupImageUrl")).isEmpty()) {
                         Uri uri = Uri.parse(documentSnapshot.getString("groupImageUrl"));
                         AndroidUtil.setGroupPic(this, uri, groupImagePicView);
                     }
-                    int numMembers = userIds.size();
+                    int numMembers = userIds.size(); // Кiл-ть учасникiв
 
                     if (numMembers == 1) {
                         membersText = "1 " + getString(R.string.member);
@@ -224,7 +226,6 @@ public class GroupChatActivity extends AppCompatActivity {
                     groupMembersTextView.setText(membersText);
                 }
             }).addOnFailureListener(e -> {
-                // Обработка ошибки
             });
         }
     }
@@ -270,6 +271,7 @@ public class GroupChatActivity extends AppCompatActivity {
         });
     }
 
+    // Завантаження списку адмiнiстраторiв
     private void setupAdminListener() {
         db.collection("chatrooms").document(groupId).collection("admins")
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -291,6 +293,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 });
     }
 
+    // Завантаження списку учасникiв
     private void setupMemberListener() {
         db.collection("chatrooms").document(groupId).collection("members")
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -312,6 +315,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 });
     }
 
+    // Синхронизацiя даних користувачiв
     private void syncUsersData() {
         db.collection("users")
                 .get()
@@ -332,7 +336,7 @@ public class GroupChatActivity extends AppCompatActivity {
                                             List<UserModel> adminUsers = new ArrayList<>();
                                             for (DocumentSnapshot doc : adminTask.getResult()) {
                                                 UserModel user = doc.toObject(UserModel.class);
-                                                // Проверяем наличие пользователя в коллекции "admins" группового чата по идентификатору
+                                                // Перевіряємо наявність користувача в колекції "admins" групового чату за ідентифікатором
                                                 if (userExists(user, allUsers)) {
                                                     adminUsers.add(user);
                                                 }
@@ -349,7 +353,7 @@ public class GroupChatActivity extends AppCompatActivity {
                                             List<UserModel> memberUsers = new ArrayList<>();
                                             for (DocumentSnapshot doc : memberTask.getResult()) {
                                                 UserModel user = doc.toObject(UserModel.class);
-                                                // Проверяем наличие пользователя в коллекции "members" группового чата по идентификатору
+                                                // Перевіряємо наявність користувача в колекції "members" групового чату за ідентифікатором
                                                 if (userExists(user, allUsers)) {
                                                     memberUsers.add(user);
                                                 }
@@ -362,10 +366,10 @@ public class GroupChatActivity extends AppCompatActivity {
                 });
     }
 
+    // Синхронизацiя даних групи
     private void syncGroupData() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Слушатель изменений данных группы
         DocumentReference groupRef = db.collection("chatrooms").document(groupId);
         groupRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -376,7 +380,6 @@ public class GroupChatActivity extends AppCompatActivity {
                 }
 
                 if (documentSnapshot != null && documentSnapshot.exists()) {
-                    // Получаем обновленные данные о группе
                     String groupNameText = documentSnapshot.getString("groupName");
                     String membersText;
                     List<String> userIds = (List<String>) documentSnapshot.get("userIds");

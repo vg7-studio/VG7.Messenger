@@ -30,16 +30,18 @@ import com.vg7.messenger.utils.FirebaseUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+// Діалогове вікно для додавання користувачів до групи
 public class AddMemberToGroupDialog extends DialogFragment {
 
-    EditText searchInput;
-    ImageButton searchButton;
-    ImageButton backButton;
-    RecyclerView recyclerView;
-    SearchInGroupUserRecyclerAdapter adapter;
-    GroupChatroomModel group;
-    GroupChatActivity groupChatActivity;
+    EditText searchInput; // Поле введення для пошуку користувачів
+    ImageButton searchButton; // Кнопка пошуку
+    ImageButton backButton; // Кнопка назад
+    RecyclerView recyclerView; // RecyclerView для відображення результатів пошуку
+    SearchInGroupUserRecyclerAdapter adapter; // Адаптер для RecyclerView
+    GroupChatroomModel group; // Модель групи
+    GroupChatActivity groupChatActivity; // Активність групового чату
 
+    // Конструктор з параметрами групи та активності групового чату
     public AddMemberToGroupDialog(GroupChatroomModel group, GroupChatActivity groupChatActivity) {
         this.group = group;
         this.groupChatActivity = groupChatActivity;
@@ -52,34 +54,35 @@ public class AddMemberToGroupDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_member_to_group_dialog, null);
 
-        // Инициализация элементов представлений
+        // Ініціалізація елементів відображення
         searchInput = view.findViewById(R.id.search_username_input);
         searchButton = view.findViewById(R.id.search_user_btn);
         backButton = view.findViewById(R.id.back_btn);
         recyclerView = view.findViewById(R.id.search_user_recycler_view);
 
-        searchInput.requestFocus();
+        searchInput.requestFocus(); // Фокус на полі введення для пошуку
 
-        backButton.setOnClickListener(v -> dismiss());
+        backButton.setOnClickListener(v -> dismiss()); // Обробник натискання на кнопку "назад"
 
-        searchButton.setOnClickListener(v -> {
+        searchButton.setOnClickListener(v -> { // Обробник натискання на кнопку "пошук"
             String searchTerm = searchInput.getText().toString();
             if (searchTerm.isEmpty() || searchTerm.length() < 3) {
                 searchInput.setError(getString(R.string.invalid_username));
                 return;
             }
-            setupSearchRecyclerView(searchTerm);
+            setupSearchRecyclerView(searchTerm); // Налаштування RecyclerView для пошуку користувачів
         });
 
-        // Инициализация RecyclerView
+        // Ініціалізація RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        builder.setView(view);
-        return builder.create();
+        builder.setView(view); // Встановлення вигляду для діалогового вікна
+        return builder.create(); // Створення діалогового вікна
     }
 
+    // Метод налаштування RecyclerView для пошуку користувачів за введеним терміном пошуку
     void setupSearchRecyclerView(String searchTerm) {
-        // Настройка запроса к Firestore
+        // Налаштування запиту до Firestore
         Query query = FirebaseUtil.allUserCollectionReference()
                 .whereGreaterThanOrEqualTo("username", searchTerm)
                 .whereLessThanOrEqualTo("username", searchTerm + '\uf8ff');
@@ -91,7 +94,7 @@ public class AddMemberToGroupDialog extends DialogFragment {
             adapter.stopListening();
         }
 
-        // Инициализация и настройка адаптера
+        // Ініціалізація та налаштування адаптера
         adapter = new SearchInGroupUserRecyclerAdapter(options, getContext(), groupChatActivity, group, getDialog());
         recyclerView.setAdapter(adapter);
         adapter.startListening();

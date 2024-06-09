@@ -30,7 +30,7 @@ public class SearchUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_user);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        // Инициализация элементов представлений
+        // Ініціалізація елементів уявлень
         searchInput = findViewById(R.id.search_username_input);
         searchButton = findViewById(R.id.search_user_btn);
         backButton = findViewById(R.id.back_btn);
@@ -38,7 +38,6 @@ public class SearchUserActivity extends AppCompatActivity {
 
         searchInput.requestFocus();
 
-        // Установка слушателей
         backButton.setOnClickListener(v -> onBackPressed());
         searchButton.setOnClickListener(v -> {
             String searchTerm = searchInput.getText().toString();
@@ -49,12 +48,11 @@ public class SearchUserActivity extends AppCompatActivity {
             setupSearchRecyclerView(searchTerm);
         });
 
-        // Инициализация RecyclerView
+        // Ініціалізація RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     void setupSearchRecyclerView(String searchTerm) {
-        // Настройка запроса к Firestore
         Query query = FirebaseUtil.allUserCollectionReference()
                 .whereGreaterThanOrEqualTo("username", searchTerm)
                 .whereLessThanOrEqualTo("username", searchTerm + '\uf8ff');
@@ -66,7 +64,6 @@ public class SearchUserActivity extends AppCompatActivity {
             adapter.stopListening();
         }
 
-        // Инициализация и настройка адаптера
         adapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
         recyclerView.setAdapter(adapter);
         adapter.startListening();

@@ -176,8 +176,11 @@ public class GroupChatRecyclerAdapter extends FirestoreRecyclerAdapter<GroupChat
         TextView rightChatFileTextView;
         TextView rightChatTextView;
 
+        // Конструктор ViewHolder
         public GroupChatViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            // Знайти всі елементи макету
             leftChatLayout = itemView.findViewById(R.id.left_chat_layout);
             leftChatUsername = itemView.findViewById(R.id.left_chat_username);
             leftChatImageView = itemView.findViewById(R.id.left_chat_imageview);

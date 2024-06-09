@@ -101,11 +101,9 @@ public class GroupDialog extends DialogFragment {
                         editBtn.setEnabled(isAdmin);
                     } else {
                         Log.e(TAG, "Current user is null");
-                        // Обработка ошибки, если необходимо
                     }
                 } else {
                     Log.e(TAG, "Document does not exist or is null");
-                    // Обработка ошибки, если необходимо
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

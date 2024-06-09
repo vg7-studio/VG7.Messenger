@@ -10,17 +10,25 @@ import com.vg7.messenger.model.GroupChatroomModel;
 
 import java.util.Objects;
 
+// Клас для розбору знімка чату
 public class ChatroomSnapshotParser implements SnapshotParser<BaseChatroomModel> {
 
+    // Перевизначений метод для розбору знімка
     @NonNull
     @Override
     public BaseChatroomModel parseSnapshot(DocumentSnapshot snapshot) {
+        // Отримати тип чату зі знімка
         String type = snapshot.getString("type");
+
+        // Якщо це груповий чат, повернути об'єкт типу GroupChatroomModel
         if ("group".equals(type)) {
             return Objects.requireNonNull(snapshot.toObject(GroupChatroomModel.class));
-        } else {
+        }
+        // Якщо це особистий чат, повернути об'єкт типу ChatroomModel
+        else {
             return Objects.requireNonNull(snapshot.toObject(ChatroomModel.class));
         }
     }
 }
+
 

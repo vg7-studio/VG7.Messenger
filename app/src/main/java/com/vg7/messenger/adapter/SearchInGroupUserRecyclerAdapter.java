@@ -85,6 +85,7 @@ public class SearchInGroupUserRecyclerAdapter extends FirestoreRecyclerAdapter<U
         return new UserModelViewHolder(view);
     }
 
+    // Метод для отримання ID учасників групи
     private void getMembersIds(FirebaseFirestoreCallback callback) {
         List<String> membersIds = new ArrayList<>();
 
@@ -108,6 +109,7 @@ public class SearchInGroupUserRecyclerAdapter extends FirestoreRecyclerAdapter<U
         void onCallback(List<String> membersIds);
     }
 
+    // Метод для додавання користувача до групового чату
     private void addUserToGroupChat(UserModel model) {
         CollectionReference membersCollectionRef = FirebaseFirestore.getInstance().collection("chatrooms")
                 .document(group.getChatroomId()).collection("members");
@@ -120,7 +122,7 @@ public class SearchInGroupUserRecyclerAdapter extends FirestoreRecyclerAdapter<U
                             .addOnSuccessListener(aVoid1 -> {
                                 Toast.makeText(context, model.getUsername() + " added to the group chat", Toast.LENGTH_SHORT).show();
                                 if (dialog != null && dialog.isShowing()) {
-                                    dialog.dismiss();  // Закрыть диалоговое окно
+                                    dialog.dismiss();  // Закрити діалогове вікно
                                 }
                             })
                             .addOnFailureListener(e -> {

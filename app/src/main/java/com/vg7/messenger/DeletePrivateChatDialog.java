@@ -41,11 +41,13 @@ public class DeletePrivateChatDialog  extends DialogFragment {
         yesBtn = view.findViewById(R.id.yesBtn);
         noBtn = view.findViewById(R.id.noBtn);
 
+        // Встановлення значень для елементів діалогового вікна
         dialogIcon.setBackgroundResource(R.drawable.circular_bg);
         dialogIcon.setBackgroundTintList(getResources().getColorStateList(R.color.my_primary));
         dialogIcon.setImageResource(R.drawable.delete_group_icon);
         dialogText.setText(R.string.delete_private_chat_message);
 
+        // Обробник кліків на кнопки
         yesBtn.setOnClickListener(v -> deletePrivateChat());
         noBtn.setOnClickListener(v -> dismiss());
 
@@ -53,10 +55,11 @@ public class DeletePrivateChatDialog  extends DialogFragment {
         return builder.create();
     }
 
+    // Метод для видалення приватного чату
     private void deletePrivateChat() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Удаление группового чата из коллекции "chatrooms"
+        // Видалення приватного чату з колекції "chatrooms"
         db.collection("chatrooms").document(chatroomModel.getChatroomId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {

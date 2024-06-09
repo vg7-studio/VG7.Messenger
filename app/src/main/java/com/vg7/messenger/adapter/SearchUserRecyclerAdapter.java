@@ -84,10 +84,11 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                 });
     }
 
+    // Інтерфейс для обробки URI зображення профілю
     public interface ProfilePicCallback {
+        // Метод зворотного виклику, який викликається з URI зображення профілю
         void onCallback(Uri uri);
     }
-
 
     // ViewHolder для рядків пошуку користувачів
     class UserModelViewHolder extends RecyclerView.ViewHolder {

@@ -42,11 +42,13 @@ public class DeleteGroupDialog extends DialogFragment {
         yesBtn = view.findViewById(R.id.yesBtn);
         noBtn = view.findViewById(R.id.noBtn);
 
+        // Встановлення значень для елементів діалогового вікна
         dialogIcon.setBackgroundResource(R.drawable.circular_bg);
         dialogIcon.setBackgroundTintList(getResources().getColorStateList(R.color.my_primary));
         dialogIcon.setImageResource(R.drawable.delete_group_icon);
         dialogText.setText(R.string.delete_group_message);
 
+        // Обробник кліків на кнопки
         yesBtn.setOnClickListener(v -> deleteGroup());
         noBtn.setOnClickListener(v -> dismiss());
 
@@ -54,10 +56,11 @@ public class DeleteGroupDialog extends DialogFragment {
         return builder.create();
     }
 
+    // Метод для видалення групи
     private void deleteGroup() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Удаление группового чата из коллекции "chatrooms"
+        // Видалення групового чату з колекції "chatrooms"
         db.collection("chatrooms").document(group.getChatroomId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
