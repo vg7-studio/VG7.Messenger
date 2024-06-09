@@ -44,6 +44,16 @@
             android:layout_centerVertical="true"
             android:id="@+id/back_btn"/>
 
+        <ImageButton
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/icon_delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/white"
+            android:layout_centerVertical="true"
+            android:id="@+id/delete_btn"/>
+
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
