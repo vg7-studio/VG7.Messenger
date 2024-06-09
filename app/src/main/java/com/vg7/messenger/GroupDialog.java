@@ -145,8 +145,8 @@ public class GroupDialog extends DialogFragment {
         adminsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         membersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adminAdapter = new AdminAdapter(getContext(), adminsList);
-        memberAdapter = new MemberAdapter(getContext(), membersList);
+        adminAdapter = new AdminAdapter(getContext(), this, adminsList);
+        memberAdapter = new MemberAdapter(getContext(), this, membersList);
 
         adminsRecyclerView.setAdapter(adminAdapter);
         membersRecyclerView.setAdapter(memberAdapter);
@@ -342,6 +342,11 @@ public class GroupDialog extends DialogFragment {
                 // Обработка ошибки, если необходимо
             }
         });
+    }
+
+    public void openUserProfile(UserModel model) {
+        ProfileDialog dialog = new ProfileDialog(model);
+        dialog.show(getParentFragmentManager(), "open_profile");
     }
 
     private void addMemberDialog() {

@@ -4,6 +4,7 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import static java.security.AccessController.getContext;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -16,6 +17,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.vg7.messenger.ChatActivity;
+import com.vg7.messenger.GroupDialog;
+import com.vg7.messenger.ProfileDialog;
 import com.vg7.messenger.R;
 import com.vg7.messenger.model.UserModel;
 import com.vg7.messenger.utils.AndroidUtil;
@@ -25,11 +29,18 @@ import java.util.List;
 
 public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHolder> {
 
-    private Context context;
-    private List<UserModel> adminList;
+    Context context;
+    List<UserModel> adminList;
+    GroupDialog dialog;
 
     public AdminAdapter(Context context, List<UserModel> adminList) {
         this.context = context;
+        this.adminList = adminList;
+    }
+
+    public AdminAdapter(Context context, GroupDialog dialog, List<UserModel> adminList) {
+        this.context = context;
+        this.dialog = dialog;
         this.adminList = adminList;
     }
 
@@ -50,6 +61,10 @@ public class AdminAdapter extends RecyclerView.Adapter<AdminAdapter.AdminViewHol
         } else {
             holder.adminPhoneNumber.setText("*************");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            dialog.openUserProfile(admin);
+        });
 
         FirebaseUtil.getOtherProfilePicStorageRef(admin.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {

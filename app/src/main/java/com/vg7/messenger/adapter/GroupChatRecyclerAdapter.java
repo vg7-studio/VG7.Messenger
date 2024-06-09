@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.vg7.messenger.GroupChatActivity;
 import com.vg7.messenger.R;
 import com.vg7.messenger.model.GroupChatMessageModel;
@@ -60,10 +62,13 @@ public class GroupChatRecyclerAdapter extends FirestoreRecyclerAdapter<GroupChat
         holder.rightChatFileLayout.setVisibility(View.GONE);
         holder.rightChatFileTextView.setVisibility(View.GONE);
 
+        DocumentReference senderDocRef = FirebaseFirestore.getInstance().collection("chatrooms")
+                .document(groupChatActivity.groupId)
+                .collection("members")
+                .document(model.getSenderId());
+
         // Визначити відправника повідомлення
         boolean isSender = model.getSenderId().equals(FirebaseUtil.currentUserId());
-        // Визначити ім'я відправника повідомлення
-        String senderName  = model.getName();
 
         // Визначити активний макет для повідомлення
         LinearLayout activeLayout = isSender ? holder.rightChatLayout : holder.leftChatLayout;
@@ -82,7 +87,18 @@ public class GroupChatRecyclerAdapter extends FirestoreRecyclerAdapter<GroupChat
         } else {
             holder.rightChatLayout.setVisibility(View.GONE);
             holder.leftChatUsername.setVisibility(View.VISIBLE);
-            holder.leftChatUsername.setText(model.getName());
+            // Визначити ім'я відправника повідомлення
+            senderDocRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String senderName = documentSnapshot.getString("username");
+                    if (senderName != null) {
+                        Log.d("Username", "Username: " + senderName);
+                        holder.leftChatUsername.setText(senderName);
+                    } else {
+                        Log.d("Username", "Username not found");
+                    }
+                }
+            });
             holder.leftChatLayout.setVisibility(View.VISIBLE);
         }
 

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.vg7.messenger.GroupDialog;
 import com.vg7.messenger.R;
 import com.vg7.messenger.model.UserModel;
 import com.vg7.messenger.utils.AndroidUtil;
@@ -22,11 +23,18 @@ import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
-    private Context context;
-    private List<UserModel> memberList;
+    Context context;
+    List<UserModel> memberList;
+    GroupDialog dialog;
 
     public MemberAdapter(Context context, List<UserModel> memberList) {
         this.context = context;
+        this.memberList = memberList;
+    }
+
+    public MemberAdapter(Context context, GroupDialog dialog, List<UserModel> memberList) {
+        this.context = context;
+        this.dialog = dialog;
         this.memberList = memberList;
     }
 
@@ -47,6 +55,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         } else {
             holder.memberPhoneNumber.setText("*************");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            dialog.openUserProfile(member);
+        });
 
         FirebaseUtil.getOtherProfilePicStorageRef(member.getUserId()).getDownloadUrl()
                 .addOnCompleteListener(t -> {

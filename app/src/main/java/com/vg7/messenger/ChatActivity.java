@@ -373,7 +373,7 @@ public class ChatActivity extends AppCompatActivity {
         startActivityForResult(filePickerIntent, REQUEST_PICK_FILE);
     }
 
-    private void openUserProfile(UserModel model) {
+    public void openUserProfile(UserModel model) {
         ProfileDialog dialog = new ProfileDialog(model);
         dialog.show(getSupportFragmentManager(), "open_profile");
     }

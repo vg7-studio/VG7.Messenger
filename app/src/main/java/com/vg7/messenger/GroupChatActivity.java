@@ -81,7 +81,7 @@ public class GroupChatActivity extends AppCompatActivity {
     GroupChatRecyclerAdapter adapter;
     GroupChatroomModel chatroomModel;
 
-    String groupId;
+    public String groupId;
 
     private AdminAdapter adminAdapter;
     private MemberAdapter memberAdapter;
