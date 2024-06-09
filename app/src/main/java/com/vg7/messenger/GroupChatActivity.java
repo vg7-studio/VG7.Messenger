@@ -1,5 +1,7 @@
 package com.vg7.messenger;
 
+import static java.security.AccessController.getContext;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -146,8 +148,9 @@ public class GroupChatActivity extends AppCompatActivity {
         setupAdminListener();
         setupMemberListener();
 
-        // Синхронизация данных пользователей
+        // Синхронизация данных пользователей и группы
         syncUsersData();
+        syncGroupData();
     }
 
     @Override
@@ -203,7 +206,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
                     if (documentSnapshot.getString("groupImageUrl") != null && !Objects.requireNonNull(documentSnapshot.getString("groupImageUrl")).isEmpty()) {
                         Uri uri = Uri.parse(documentSnapshot.getString("groupImageUrl"));
-                        AndroidUtil.setProfilePic(this, uri, groupImagePicView);
+                        AndroidUtil.setGroupPic(this, uri, groupImagePicView);
                     }
                     int numMembers = userIds.size();
 
@@ -358,6 +361,50 @@ public class GroupChatActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void syncGroupData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Слушатель изменений данных группы
+        DocumentReference groupRef = db.collection("chatrooms").document(groupId);
+        groupRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // Получаем обновленные данные о группе
+                    String groupNameText = documentSnapshot.getString("groupName");
+                    String membersText;
+                    List<String> userIds = (List<String>) documentSnapshot.get("userIds");
+
+                    // Обновляем UI в GroupDialog
+                    if (chatroomModel != null && chatroomModel.getGroupImageUrl() != null && !chatroomModel.getGroupImageUrl().isEmpty()) {
+                        Uri uri = Uri.parse(chatroomModel.getGroupImageUrl());
+                        AndroidUtil.setGroupPic(GroupChatActivity.this, uri, groupImagePicView);
+                    }
+                    int numMembers = userIds.size();
+
+                    if (numMembers == 1) {
+                        membersText = "1 " + getString(R.string.member);
+                    } else if (numMembers % 10 == 1 && numMembers != 11) {
+                        membersText = numMembers + " " + getString(R.string.member);
+                    } else if (numMembers % 10 >= 2 && numMembers % 10 <= 4 && (numMembers < 10 || numMembers > 20)) {
+                        membersText = numMembers + " " + getString(R.string.member2);
+                    } else {
+                        membersText = numMembers + " " + getString(R.string.member3);
+                    }
+
+                    groupNameTextView.setText(groupNameText);
+                    groupMembersTextView.setText(membersText);
+                }
+            }
+        });
+    }
+
 
     private void updateCollection(String collectionName, List<UserModel> allUsers, List<UserModel> specificUsers) {
         for (UserModel user : allUsers) {

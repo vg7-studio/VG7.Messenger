@@ -46,4 +46,11 @@
     <string name="member">участник</string>
     <string name="member2">участника</string>
     <string name="member3">участников</string>
+    <string name="edit_group">Редактировать группу</string>
+    <string name="save">Сохранить</string>
+    <string name="add_member">Добавить участника</string>
+    <string name="delete_group">Удалить группу</string>
+    <string name="leave_the_group">Покинуть группу</string>
+    <string name="delete_group_message">Вы уверены, что хотите удалить группу? Все участники из группы будут удалены.</string>
+    <string name="leave_group_message">Вы уверены, что хотите покинуть группу?</string>
 </resources>

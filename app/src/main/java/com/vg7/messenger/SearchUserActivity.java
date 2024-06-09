@@ -31,7 +31,7 @@ public class SearchUserActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Инициализация элементов представлений
-        searchInput = findViewById(R.id.seach_username_input);
+        searchInput = findViewById(R.id.search_username_input);
         searchButton = findViewById(R.id.search_user_btn);
         backButton = findViewById(R.id.back_btn);
         recyclerView = findViewById(R.id.search_user_recycler_view);

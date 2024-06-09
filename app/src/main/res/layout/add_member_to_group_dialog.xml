@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SearchUserActivity">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_20sdp"
+    android:background="@drawable/shape_dialog"
+    android:backgroundTint="@color/white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/search_user"
+            android:text="@string/add_member"
             android:textSize="@dimen/_17sdp"
             android:fontFamily="@font/spartan_bold"
             android:textColor="@color/white"
@@ -39,7 +42,6 @@
         android:id="@+id/search_user_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -67,7 +69,10 @@
             android:layout_height="@dimen/_31sdp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_margin="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="@dimen/_3sdp"
             android:src="@drawable/icon_search"
@@ -78,10 +83,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_user_layout"
+        android:minHeight="@dimen/_200sdp"
         android:padding="@dimen/_8sdp"
         android:id="@+id/search_user_recycler_view"
         />
 
 
-</RelativeLayout>
+</LinearLayout>

@@ -121,6 +121,7 @@
         android:id="@+id/members_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:minHeight="@dimen/_150sdp"
         android:layout_marginBottom="@dimen/_16sdp"
         android:paddingHorizontal="@dimen/_8sdp"/>
 

@@ -18,10 +18,12 @@
 
     <string name="search_user">Search User</string>
     <string name="create_group">Create Group</string>
+    <string name="edit_group">Edit Group</string>
     <string name="phone_number">Phone number</string>
     <string name="status">Status</string>
     <string name="hide_phone_number">Hide phone number</string>
     <string name="update_profile">Update profile</string>
+    <string name="save">Save</string>
     <string name="logout">Logout</string>
     <string name="group_name">Name</string>
     <string name="resend_otp_code">Resend OTP-code</string>
@@ -41,6 +43,13 @@
     <string name="member">member</string>
     <string name="member2">members</string>
     <string name="member3">members</string>
+
+    <string name="add_member">Add member</string>
+    <string name="delete_group">Delete group</string>
+    <string name="leave_the_group">Leave the group</string>
+
+    <string name="leave_group_message">Are you sure you want to leave the group?</string>
+    <string name="delete_group_message">Are you sure you want to delete the group? All members from the group will be removed.</string>
 
     <string name="enable_notifications">Enable Notifications</string>
     <string name="notifications_are_disabled_message">Notifications are disabled. Please enable them in the settings to receive updates.</string>

@@ -46,4 +46,11 @@
     <string name="member">member</string>
     <string name="member2">members</string>
     <string name="member3">members</string>
+    <string name="edit_group">Edit Group</string>
+    <string name="save">Save</string>
+    <string name="add_member">Add member</string>
+    <string name="delete_group">Delete group</string>
+    <string name="leave_the_group">Leave the group</string>
+    <string name="delete_group_message">Are you sure you want to delete the group? All members from the group will be removed.</string>
+    <string name="leave_group_message">Are you sure you want to leave the group?</string>
 </resources>

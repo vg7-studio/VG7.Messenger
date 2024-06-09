@@ -36,19 +36,21 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         // Встановити ім'я та телефон користувача
         holder.usernameText.setText(model.getUsername());
         holder.phoneText.setText(model.getPhone());
-        // Якщо це поточний користувач, додати мітку "Я"
+
+        // Якщо це поточний користувач, ігнор
         if (model.getUserId().equals(FirebaseUtil.currentUserId())) {
-            holder.usernameText.setText(model.getUsername() + " (Я)");
+            holder.itemView.setVisibility(View.GONE);
+            return;
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
         }
 
         // Отримати посилання на профільне зображення користувача
-        FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
-                .addOnCompleteListener(t -> {
-                    if (t.isSuccessful()) {
-                        Uri uri = t.getResult();
-                        AndroidUtil.setProfilePic(context, uri, holder.profilePic);
-                    }
-                });
+        getProfilePicUri(model.getUserId(), uri -> {
+            if (uri != null) {
+                AndroidUtil.setProfilePic(context, uri, holder.profilePic);
+            }
+        });
 
         // Обробка натискання на елемент
         holder.itemView.setOnClickListener(v -> {
@@ -69,6 +71,23 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         View view = LayoutInflater.from(context).inflate(R.layout.search_user_recycler_row, parent, false);
         return new UserModelViewHolder(view);
     }
+
+    // Метод для отримання Uri профільного зображення користувача
+    private void getProfilePicUri(String userId, ProfilePicCallback callback) {
+        FirebaseUtil.getOtherProfilePicStorageRef(userId).getDownloadUrl()
+                .addOnCompleteListener(t -> {
+                    if (t.isSuccessful()) {
+                        callback.onCallback(t.getResult());
+                    } else {
+                        callback.onCallback(null);
+                    }
+                });
+    }
+
+    public interface ProfilePicCallback {
+        void onCallback(Uri uri);
+    }
+
 
     // ViewHolder для рядків пошуку користувачів
     class UserModelViewHolder extends RecyclerView.ViewHolder {
