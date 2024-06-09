@@ -54,9 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     String source;
 
     EditText messageInput;
-    ImageButton sendMediaBtn;
-    ImageButton sendMessageBtn;
-    ImageButton backBtn;
+    ImageButton sendMediaBtn, sendMessageBtn, backBtn, deleteBtn;
     TextView otherUsername;
     RecyclerView recyclerView;
     ImageView imagePicView;
@@ -80,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         sendMediaBtn = findViewById(R.id.message_send_media_btn);
         sendMessageBtn = findViewById(R.id.message_send_btn);
         backBtn = findViewById(R.id.back_btn);
+        deleteBtn = findViewById(R.id.delete_btn);
         otherUsername = findViewById(R.id.other_username);
         recyclerView = findViewById(R.id.chat_recycler_view);
         imagePicView = findViewById(R.id.profile_pic_image_view);
@@ -88,6 +87,7 @@ public class ChatActivity extends AppCompatActivity {
         source = getIntent().getStringExtra("source");
 
         backBtn.setOnClickListener(v -> { navigateBack(); });
+        deleteBtn.setOnClickListener(v -> deleteChat());
 
         imagePicView.setOnClickListener(v -> {
             openUserProfile(otherUser);
@@ -385,6 +385,11 @@ public class ChatActivity extends AppCompatActivity {
     public void openVideoPlayer(Uri videoUri) {
         VideoPlayerDialog dialog = new VideoPlayerDialog(videoUri);
         dialog.show(getSupportFragmentManager(), "open_video");
+    }
+
+    public void deleteChat() {
+        DeletePrivateChatDialog dialog = new DeletePrivateChatDialog(chatroomModel);
+        dialog.show(getSupportFragmentManager(), "delete_chat");
     }
 
     void callApi(JSONObject jsonObject){

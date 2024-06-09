@@ -1,7 +1,6 @@
 package com.vg7.messenger;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +15,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.vg7.messenger.model.GroupChatroomModel;
+import com.vg7.messenger.model.ChatroomModel;
 
-public class DeleteGroupDialog extends DialogFragment {
+public class DeletePrivateChatDialog  extends DialogFragment {
 
     ImageView dialogIcon;
     TextView dialogText;
     Button yesBtn, noBtn;
 
-    GroupChatroomModel group;
+    ChatroomModel chatroomModel;
 
-    public DeleteGroupDialog(GroupChatroomModel group) {
-        this.group = group;
+    public DeletePrivateChatDialog(ChatroomModel chatroomModel) {
+        this.chatroomModel = chatroomModel;
     }
 
     @NonNull
@@ -45,20 +44,20 @@ public class DeleteGroupDialog extends DialogFragment {
         dialogIcon.setBackgroundResource(R.drawable.circular_bg);
         dialogIcon.setBackgroundTintList(getResources().getColorStateList(R.color.my_primary));
         dialogIcon.setImageResource(R.drawable.delete_group_icon);
-        dialogText.setText(R.string.delete_group_message);
+        dialogText.setText(R.string.delete_private_chat_message);
 
-        yesBtn.setOnClickListener(v -> deleteGroup());
+        yesBtn.setOnClickListener(v -> deletePrivateChat());
         noBtn.setOnClickListener(v -> dismiss());
 
         builder.setView(view);
         return builder.create();
     }
 
-    private void deleteGroup() {
+    private void deletePrivateChat() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Удаление группового чата из коллекции "chatrooms"
-        db.collection("chatrooms").document(group.getChatroomId())
+        db.collection("chatrooms").document(chatroomModel.getChatroomId())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     dismiss();
@@ -67,7 +66,7 @@ public class DeleteGroupDialog extends DialogFragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Error deleting group", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Error deleting private chat", Toast.LENGTH_SHORT).show();
                     dismiss();
                 });
     }

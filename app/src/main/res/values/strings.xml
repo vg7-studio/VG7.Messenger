@@ -50,6 +50,7 @@
 
     <string name="leave_group_message">Are you sure you want to leave the group?</string>
     <string name="delete_group_message">Are you sure you want to delete the group? All members from the group will be removed.</string>
+    <string name="delete_private_chat_message">Are you sure you want to delete the chat? This chat will also be deleted from your interlocutor.</string>
 
     <string name="enable_notifications">Enable Notifications</string>
     <string name="notifications_are_disabled_message">Notifications are disabled. Please enable them in the settings to receive updates.</string>

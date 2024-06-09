@@ -53,4 +53,5 @@
     <string name="leave_the_group">Покинуть группу</string>
     <string name="delete_group_message">Вы уверены, что хотите удалить группу? Все участники из группы будут удалены.</string>
     <string name="leave_group_message">Вы уверены, что хотите покинуть группу?</string>
+    <string name="delete_private_chat_message">Вы уверены, что хотите удалить чат? Этот чат также будет удален у вашего собеседника.</string>
 </resources>
