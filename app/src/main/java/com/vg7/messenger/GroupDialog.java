@@ -45,6 +45,7 @@ public class GroupDialog extends DialogFragment {
     private static final String TAG = "GroupDialog";
 
     GroupChatroomModel model;
+    GroupChatActivity groupChatActivity;
     ImageButton backBtn, editBtn, moreBtn;
     ImageView imageUri;
     TextView groupName, groupMembers;
@@ -60,8 +61,9 @@ public class GroupDialog extends DialogFragment {
     List<UserModel> adminsList = new ArrayList<>();
     List<UserModel> membersList = new ArrayList<>();
 
-    public GroupDialog(GroupChatroomModel model) {
+    public GroupDialog(GroupChatroomModel model, GroupChatActivity groupChatActivity) {
         this.model = model;
+        this.groupChatActivity = groupChatActivity;
     }
 
     @NonNull
@@ -83,6 +85,36 @@ public class GroupDialog extends DialogFragment {
             editGroup(model);
         }));
         moreBtn.setOnClickListener(this::showPopupMenu);
+
+        // Установка видимости кнопки редактирования группы по роли текущего пользователя
+        FirebaseUtil.currentUserDetails().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    currentUser = documentSnapshot.toObject(UserModel.class);
+
+                    // Проверяем, что currentUser не null
+                    if (currentUser != null) {
+                        // Проверка роли текущего пользователя
+                        boolean isAdmin = isAdmin(currentUser);
+                        editBtn.setVisibility(isAdmin ? View.VISIBLE : View.GONE);
+                        editBtn.setEnabled(isAdmin);
+                    } else {
+                        Log.e(TAG, "Current user is null");
+                        // Обработка ошибки, если необходимо
+                    }
+                } else {
+                    Log.e(TAG, "Document does not exist or is null");
+                    // Обработка ошибки, если необходимо
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Failed to get current user details", e);
+                // Обработка ошибки, если необходимо
+            }
+        });
 
         // Инициализация RecyclerView и адаптеров
         initializeRecyclerView(view);
@@ -313,17 +345,18 @@ public class GroupDialog extends DialogFragment {
     }
 
     private void addMemberDialog() {
-        AddMemberToGroupDialog dialog = new AddMemberToGroupDialog(model);
+        AddMemberToGroupDialog dialog = new AddMemberToGroupDialog(model, groupChatActivity);
         dialog.show(getParentFragmentManager(), "add_member_to_group");
     }
 
     private void deleteGroupDialog() {
-        DeleteGroupDialog dialog = new DeleteGroupDialog();
+        DeleteGroupDialog dialog = new DeleteGroupDialog(model);
         dialog.show(getParentFragmentManager(), "delete_group");
     }
 
     private void leaveGroupDialog() {
-        // Логика выхода из группы
+        LeaveGroupDialog dialog = new LeaveGroupDialog(model);
+        dialog.show(getParentFragmentManager(), "leave_group");
     }
 
     private boolean isAdmin(UserModel user) {

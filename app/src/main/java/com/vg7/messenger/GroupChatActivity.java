@@ -139,7 +139,7 @@ public class GroupChatActivity extends AppCompatActivity {
             showMediaSelectionDialog();
         }));
         messageSendBtn.setOnClickListener((v -> {
-            sendMessage();
+            sendMessage(groupChatMessageInput.getText().toString().trim());
         }));
 
         getGroupChatroomModel();
@@ -405,7 +405,6 @@ public class GroupChatActivity extends AppCompatActivity {
         });
     }
 
-
     private void updateCollection(String collectionName, List<UserModel> allUsers, List<UserModel> specificUsers) {
         for (UserModel user : allUsers) {
             boolean userExists = false;
@@ -439,8 +438,7 @@ public class GroupChatActivity extends AppCompatActivity {
         return false;
     }
 
-    private void sendMessage() {
-        String messageText = groupChatMessageInput.getText().toString().trim();
+    public void sendMessage(String messageText) {
         if (!messageText.isEmpty()) {
             chatroomModel.setLastMessageTimestamp(Timestamp.now());
             chatroomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
@@ -553,7 +551,7 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void openGroup(GroupChatroomModel model) {
-        GroupDialog dialog = new GroupDialog(model);
+        GroupDialog dialog = new GroupDialog(model, this);
         dialog.show(getSupportFragmentManager(), "open_group");
     }
 

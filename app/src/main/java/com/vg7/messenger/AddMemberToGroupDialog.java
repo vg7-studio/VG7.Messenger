@@ -38,9 +38,11 @@ public class AddMemberToGroupDialog extends DialogFragment {
     RecyclerView recyclerView;
     SearchInGroupUserRecyclerAdapter adapter;
     GroupChatroomModel group;
+    GroupChatActivity groupChatActivity;
 
-    public AddMemberToGroupDialog(GroupChatroomModel group) {
+    public AddMemberToGroupDialog(GroupChatroomModel group, GroupChatActivity groupChatActivity) {
         this.group = group;
+        this.groupChatActivity = groupChatActivity;
     }
 
     @NonNull
@@ -90,7 +92,7 @@ public class AddMemberToGroupDialog extends DialogFragment {
         }
 
         // Инициализация и настройка адаптера
-        adapter = new SearchInGroupUserRecyclerAdapter(options, getContext(), group, getDialog());
+        adapter = new SearchInGroupUserRecyclerAdapter(options, getContext(), groupChatActivity, group, getDialog());
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }
